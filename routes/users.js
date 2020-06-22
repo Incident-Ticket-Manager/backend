@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/', async function(req, res, next) {
 
-	console.log(req);
+	console.log(req.body);
 	var response = await sequelize.users.create({
 		username: req.body.username,
 		password: req.body.password,
