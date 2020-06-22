@@ -18,8 +18,9 @@ router.get('/', async (req, res, next) => {
 	if(user != null) {
 		res.json(user.projects);
 	}
-
-	res.status(401).end();
+	else {
+		res.status(401).end();
+	}
 });
 
 router.post('/', [
@@ -55,8 +56,9 @@ async (req, res, next) => {
 				error: 'This project name is already used'
 			});
 		}
-
-		res.status(200).end();
+	}
+	else {
+		res.status(401).end();
 	}
 });
 
@@ -121,7 +123,7 @@ async (req, res, next) => {
 	});
 
 	if(project) {
-		res.status(200).end();
+		res.json();
 	}
 	else {
 		res.status(400).json({
