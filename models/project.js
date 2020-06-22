@@ -1,5 +1,7 @@
 'use strict';
 
+const { Sequelize } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
     const Project = sequelize.define('projects', {
 		id: {
