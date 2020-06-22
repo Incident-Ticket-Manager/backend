@@ -6,4 +6,6 @@ Project.init({
     name: DataTypes.STRING,
 }, { sequelize, modelName: 'project' });
 
+Project.sync({force: true});
+
 exports.Project;

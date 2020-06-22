@@ -7,4 +7,6 @@ Ticket.init({
 	content: DataTypes.STRING,
 }, { sequelize, modelName: 'ticket' });
 
+Ticket.sync({force: true});
+
 exports.Ticket;
