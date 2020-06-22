@@ -17,30 +17,25 @@ async (req, res, next) => {
 		});
 	}
 
-	try{
-		let response = await sequelize.users.findOne({
-			where: {
-				username: req.body.username,
-				password: req.body.password
-			}
-		});
-
-		if(response != null){
-			let token = jwt.sign({
-				username: req.body.username
-			}, process.env.SECRET);
-
-			res.json({
-				username: req.body.username,
-				token: token
-			});
+	let response = await sequelize.users.findOne({
+		where: {
+			username: req.body.username,
+			password: req.body.password
 		}
+	});
 
-		res.status(400).end();
+	if(response != null){
+		let token = jwt.sign({
+			username: req.body.username
+		}, process.env.SECRET);
+
+		res.json({
+			username: req.body.username,
+			token: token
+		});
 	}
-	catch(e){
-		console.log(e);
-	}
+
+	res.status(400).end();
 });
 
 module.exports = router;
