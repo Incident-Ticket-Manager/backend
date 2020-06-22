@@ -16,18 +16,10 @@ const { body, validationResult } = require('express-validator');
  * @property {string} title - Title of the ticket
  * @property {string} content - Content of the ticket
  * @property {enum} status - Status of the ticket - eg: Open, In progress, Resolved
+ * @property {string} user - Assigned user
+ * @property {string} project - Project of the ticket
+ * @property {string} clientId - The client id who create the ticket
  * @property {ClientDTO.model} client - Client who created the ticket
- */
-
-/**
- * @typedef CreateTicketDTO
- * @property {string} project - Name of the project
- * @property {string} title - Title of the ticket
- * @property {string} content - Content of the ticket
- * @property {string} name - Name of the client
- * @property {string} email - Email of the client
- * @property {string} phone - Phone of the client
- * @property {string} address - Address of the client
  */
 
 /**
@@ -53,11 +45,9 @@ router.get('/', async (req, res, next) => {
 		},
 		include: [
 			{
-				model: sequelize.ticket
+				model: sequelize.ticket,
+				include: sequelize.client
 			},
-			{
-				model: sequelize.client
-			}
 		]
 	});
 
@@ -68,6 +58,17 @@ router.get('/', async (req, res, next) => {
 		res.status(401).json();
 	}
 });
+
+/**
+ * @typedef CreateTicketDTO
+ * @property {string} project - Name of the project
+ * @property {string} title - Title of the ticket
+ * @property {string} content - Content of the ticket
+ * @property {string} name - Name of the client
+ * @property {string} email - Email of the client
+ * @property {string} phone - Phone of the client
+ * @property {string} address - Address of the client
+ */
 
 /**
  * Add a new ticket
