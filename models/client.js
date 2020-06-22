@@ -22,7 +22,6 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'clients'
     });
     Client.associate = models => {
-		models.client.hasMany(models.ticket);
 	};
     return Client;
 };
