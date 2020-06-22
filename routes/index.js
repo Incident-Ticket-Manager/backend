@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 
 /* GET tickets listing. */
-router.get('/', function(req, res, next) {
+router.get('/', async  (req, res, next) => {
 	res.redirect('/docs');
 });
 
