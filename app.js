@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var Sequelize = require('sequelize');
 
 var app = express();
 var expressSwagger = require('express-swagger-generator')(app);
@@ -40,6 +41,13 @@ let options = {
 expressSwagger(options)
 
 
+// database setup
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'database.sqlite'
+});
+User.init(sequelize, );
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -59,15 +67,6 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-/**
- * This function comment is parsed by doctrine
- * @route GET /api
- * @group foo - Operations about user
- * @param {string} email.query.required - username or email - eg: user@domain
- * @param {string} password.query.required - user's password.
- * @returns {object} 200 - An array of user info
- * @returns {Error}  default - Unexpected error
- */
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
 
