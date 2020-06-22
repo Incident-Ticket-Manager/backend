@@ -9,9 +9,10 @@ var usersRouter = require('./routes/users');
 var projectsRouter = require('./routes/projects');
 var ticketsRouter = require('./routes/tickets');
 
-
 var app = express();
 var expressSwagger = require('express-swagger-generator')(app);
+
+const { sequelize } = require('./db.js');
 
 // Swagger engine setup
 let options = {
@@ -41,6 +42,16 @@ let options = {
   files: ['./routes/**/*.js'] //Path to the API handle folder
 };
 expressSwagger(options)
+
+sequelize
+	.authenticate()
+	.then(() => {
+			console.log('Connection has been established successfully.');
+	})
+	.catch(err => {
+			console.error('Unable to connect to the database:', err);
+	}
+);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

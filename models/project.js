@@ -1,11 +1,14 @@
-const { Model, DataTypes } = require('sequelize');
-const { sequelize } = require('../db.js')
+'use strict';
 
-class Project extends Model {}
-Project.init({
-    name: DataTypes.STRING,
-}, { sequelize, modelName: 'project' });
-
-Project.sync({force: true});
-
-exports.Project;
+module.exports = (sequelize, DataTypes) => {
+    const Project = sequelize.define('projects', {
+		name: DataTypes.STRING,
+    }, {
+        tableName: 'projects'
+    });
+    Project.associate = models => {
+        // associations can be defined here
+	};
+	Project.sync({force: true});
+    return Project;
+};
