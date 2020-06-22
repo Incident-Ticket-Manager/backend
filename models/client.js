@@ -9,4 +9,6 @@ Client.init({
 	address: DataTypes.STRING,
 }, { sequelize, modelName: 'client' });
 
+Client.sync({force: true});
+
 exports.Client;
