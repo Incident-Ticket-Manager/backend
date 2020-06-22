@@ -6,11 +6,17 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
-    "express": "~4.16.1",
+    "express": "^4.16.4",
+    "express-swagger-generator": "^1.1.17",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11"
+    "nodemon": "^2.0.4",
+    "pug": "2.0.0-beta11",
+    "sequelize": "^5.21.13",
+    "sequelize-cli": "^5.5.1",
+    "sqlite3": "^4.2.0"
   }
 }
