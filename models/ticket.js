@@ -1,12 +1,15 @@
-const { Model, DataTypes } = require('sequelize');
-const { sequelize } = require('../db.js')
+'use strict';
 
-class Ticket extends Model {}
-Ticket.init({
-	title: DataTypes.STRING,
-	content: DataTypes.STRING,
-}, { sequelize, modelName: 'ticket' });
-
-Ticket.sync({force: true});
-
-exports.Ticket;
+module.exports = (sequelize, DataTypes) => {
+    const Ticket = sequelize.define('tickets', {
+		title: DataTypes.STRING,
+		content: DataTypes.STRING,
+    }, {
+        tableName: 'tickets'
+    });
+    Ticket.associate = models => {
+        // associations can be defined here
+	};
+	Ticket.sync({force: true});
+    return Ticket;
+};
