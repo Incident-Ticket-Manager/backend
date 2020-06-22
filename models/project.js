@@ -14,6 +14,6 @@ module.exports = (sequelize, DataTypes) => {
 		// associations can be defined here
 		models.projects.hasMany(models.tickets);
 	};
-	Project.sync({force: true});
+	Project.sync();
     return Project;
 };

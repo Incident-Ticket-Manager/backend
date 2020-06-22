@@ -22,6 +22,6 @@ module.exports = (sequelize, DataTypes) => {
 		// associations can be defined here
 		models.clients.hasMany(models.tickets);
 	};
-	Client.sync({force: true});
+	Client.sync();
     return Client;
 };

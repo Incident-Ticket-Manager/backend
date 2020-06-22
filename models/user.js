@@ -22,6 +22,6 @@ module.exports = (sequelize, DataTypes) => {
 		models.users.hasMany(models.projects);
 		models.users.hasMany(models.tickets);
 	};
-	User.sync({force: true});
+	User.sync();
     return User;
 };
