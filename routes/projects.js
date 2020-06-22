@@ -58,12 +58,51 @@ async (req, res, next) => {
 
 		res.status(200).end();
 	}
-	
-	res.status(401).end();
 });
 
 router.put('/', [
-	body('id').not().isEmpty(),
+	body('name').not().isEmpty(),
+	body('newName').not().isEmpty()
+],
+async (req, res, next) => {
+
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array() 
+		});
+	}
+
+	try {
+		var data = await sequelize.project.update({
+			name: req.body.newName
+		}, {
+			where: {
+				name: req.body.name
+			},
+		});
+
+		if(data[0]) {
+			res.json(await sequelize.project.findOne({
+				where: {
+					name: req.body.newName
+				}
+			}));
+		}
+		else{
+			res.status(400).json({
+				error: 'This project doesn\'t exists'
+			});
+		}
+	}
+	catch(e){
+		res.status(400).json({
+			error: 'This project name is already used'
+		});
+	}
+});
+
+router.delete('/', [
 	body('name').not().isEmpty()
 ],
 async (req, res, next) => {
@@ -75,18 +114,14 @@ async (req, res, next) => {
 		});
 	}
 
-	let project = await sequelize.project.findOne({
+	let project = await sequelize.project.destroy({
 		where: {
-			id: req.body.id,
+			name: req.body.name,
 		}
 	});
 
-	if(project != null){
-		project.update({
-			name: req.body.name
-		});
-
-		res.json(project.toJSON());
+	if(project) {
+		res.status(200).end();
 	}
 	else {
 		res.status(400).json({
