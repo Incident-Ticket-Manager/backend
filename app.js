@@ -7,7 +7,8 @@ let logger = require('morgan');
 require('dotenv').config()
 
 let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
+let registerRouter = require('./routes/register');
+let loginRouter = require('./routes/login');
 let projectsRouter = require('./routes/projects');
 let ticketsRouter = require('./routes/tickets');
 
@@ -71,12 +72,14 @@ app.use(expressJwt({
 	secret: process.env.SECRET
 }).unless({
 	path: [
-		'/users',
+		'/login',
+		'/register'
 	]
 }));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/register', registerRouter);
+app.use('/login', loginRouter);
 app.use('/projects', projectsRouter);
 app.use('/tickets', ticketsRouter);
 
