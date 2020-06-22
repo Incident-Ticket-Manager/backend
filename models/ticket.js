@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     const Ticket = sequelize.define('tickets', {
 		id: {
 			primaryKey: true,
-			type: DataTypes.UUID
+			type: DataTypes.UUID,
+			defaultValue: Sequelize.UUIDV1,
 		},
 		title: DataTypes.STRING,
 		content: DataTypes.STRING,
