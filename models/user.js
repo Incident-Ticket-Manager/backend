@@ -8,4 +8,6 @@ User.init({
     email: DataTypes.STRING
 }, { sequelize, modelName: 'user' });
 
+User.sync({force: true});
+
 exports.User;
