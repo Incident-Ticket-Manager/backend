@@ -3,6 +3,26 @@ let router = express.Router();
 let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
 
+/**
+ * @typedef ProjectDTO
+ * @property {string} name - Name of the project
+ */
+
+/**
+ * @typedef Error
+ * @property {string} error - Register error
+ */
+
+/**
+ * Get all projects of the current user
+ * @route GET /projects
+ * @group Projects
+ * @consumes application/json
+ * @produces application/json
+ * @returns {Array.<ProjectDTO>} 200 - Projects
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
 router.get('/', async (req, res, next) => {
 
 	let user = await sequelize.user.findOne({
@@ -19,10 +39,22 @@ router.get('/', async (req, res, next) => {
 		res.json(user.projects);
 	}
 	else {
-		res.status(401).end();
+		res.status(401).json();
 	}
 });
 
+/**
+ * Add a new project
+ * @route POST /projects
+ * @group Projects
+ * @param {ProjectDTO.model} project.body.required
+ * @consumes application/json
+ * @produces application/json
+ * @returns {ProjectDTO.model} 200 - Project
+ * @returns {Error.model} 400 - Project name already used
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
 router.post('/', [
 	body('name').not().isEmpty()
 ],
@@ -58,10 +90,28 @@ async (req, res, next) => {
 		}
 	}
 	else {
-		res.status(401).end();
+		res.status(401).json();
 	}
 });
 
+/**
+ * @typedef UpdateProjectDTO
+ * @property {string} name - Name of the project
+ * @property {string} newName - New name of the project
+ */
+
+/**
+ * Update a project
+ * @route PUT /projects
+ * @group Projects
+ * @param {UpdateProjectDTO.model} project.body.required
+ * @consumes application/json
+ * @produces application/json
+ * @returns {ProjectDTO.model} 200 - Project
+ * @returns {Error.model} 400 - Project doesn't exists or name is already used
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
 router.put('/', [
 	body('name').not().isEmpty(),
 	body('newName').not().isEmpty()
@@ -104,6 +154,23 @@ async (req, res, next) => {
 	}
 });
 
+/**
+ * @typedef DeleteProjectDTO
+ * @property {string} name - Name of the project
+ */
+
+/**
+ * Delete a project
+ * @route DELETE /projects
+ * @group Projects
+ * @param {DeleteProjectDTO.model} project.body.required
+ * @consumes application/json
+ * @produces application/json
+ * @returns 200 - Project deleted
+ * @returns {Error.model} 400 - This project doesn't exists
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
 router.delete('/', [
 	body('name').not().isEmpty()
 ],
