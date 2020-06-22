@@ -3,7 +3,7 @@
 const { Sequelize } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    const User = sequelize.define('users', {
+    const User = sequelize.define('user', {
 		id: {
 			primaryKey: true,
 			type: DataTypes.UUID,
@@ -25,8 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     });
     User.associate = models => {
 		// associations can be defined here
-		models.users.hasMany(models.projects);
-		models.users.hasMany(models.tickets);
+		models.user.hasMany(models.project, { as: 'user_projects' });
+		models.user.hasMany(models.ticket);
 	};
 	User.sync();
     return User;

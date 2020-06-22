@@ -3,7 +3,7 @@
 const { Sequelize } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    const Client = sequelize.define('clients', {
+    const Client = sequelize.define('client', {
 		id: {
 			primaryKey: true,
 			type: DataTypes.UUID,
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     Client.associate = models => {
 		// associations can be defined here
-		models.clients.hasMany(models.tickets);
+		models.client.hasMany(models.ticket);
 	};
 	Client.sync();
     return Client;
