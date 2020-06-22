@@ -6,7 +6,6 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var Sequelize = require('sequelize');
 
 var app = express();
 var expressSwagger = require('express-swagger-generator')(app);
@@ -39,14 +38,6 @@ let options = {
   files: ['./routes/**/*.js'] //Path to the API handle folder
 };
 expressSwagger(options)
-
-
-// database setup
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'database.sqlite'
-});
-User.init(sequelize, );
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

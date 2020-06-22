@@ -1,5 +1,5 @@
 const { Sequelize, Model, DataTypes } = require('sequelize');
-const sequelize = new Sequelize('sqlite::memory:');
+const { sequelize } = require('../db.js')
 
 class User extends Model {}
 User.init({
