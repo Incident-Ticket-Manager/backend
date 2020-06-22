@@ -17,20 +17,20 @@ if (config.use_env_variable) {
 
 let dir = __dirname + "/models";
 
-fs
-  .readdirSync(dir)
-  .filter(file => {
-    return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-  })
-  .forEach(file => {
-    const model = sequelize['import'](path.join(dir, file));
-    db[model.name] = model;
-  });
+fs.readdirSync(dir)
+	.filter(file => {
+		return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
+	})
+	.forEach(file => {
+		const model = sequelize['import'](path.join(dir, file));
+		db[model.name] = model;
+	});
 
 Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
+	let model = db[modelName];
+	if (model.associate) {
+		model.associate(db);
+	}
 });
 
 db.sequelize = sequelize;

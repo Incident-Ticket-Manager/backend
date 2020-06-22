@@ -17,7 +17,7 @@ async (req, res, next) => {
 		});
 	}
 
-	let response = await sequelize.users.findOne({
+	let response = await sequelize.user.findOne({
 		where: {
 			username: req.body.username,
 			password: req.body.password

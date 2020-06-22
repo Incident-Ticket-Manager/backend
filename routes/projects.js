@@ -16,7 +16,7 @@ async (req, res, next) => {
 	}
 
 	try{
-		let response = await sequelize.projects.create({
+		let response = await sequelize.project.create({
 			name: req.body.name,
 			user: req.body.username
 		});
