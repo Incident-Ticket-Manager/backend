@@ -4,14 +4,9 @@ const { Sequelize } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     const Project = sequelize.define('project', {
-		id: {
-			primaryKey: true,
-			type: DataTypes.UUID,
-			defaultValue: Sequelize.UUIDV1,
-		},
 		name: {
+			primaryKey: true,
 			type: DataTypes.STRING,
-			unique: true
 		},
     }, {
         tableName: 'projects'
