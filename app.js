@@ -23,7 +23,7 @@ const { sequelize } = require('./db.js');
 let options = {
 	swaggerDefinition: {
 		info: {
-			description: 'This is a sample server',
+			description: 'Server api for Incident-Ticket-Manager',
 			title: 'Swagger',
 			version: '1.0.0',
 		},
@@ -31,7 +31,6 @@ let options = {
 		basePath: '/',
 		produces: [
 			"application/json",
-			"application/xml"
 		],
 		schemes: ['http', 'https'],
 		securityDefinitions: {
@@ -39,7 +38,7 @@ let options = {
 				type: 'apiKey',
 				in: 'header',
 				name: 'Authorization',
-				description: "",
+				description: "Simple JWT",
 			}
 		}
 	},
