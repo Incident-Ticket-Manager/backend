@@ -11,6 +11,14 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		title: DataTypes.STRING,
 		content: DataTypes.STRING,
+		status: {
+			type: DataTypes.ENUM(
+				'Open',
+				'In progress',
+				'Resolved'
+			),
+			defaultValue: 'Open'
+		}
     }, {
         tableName: 'tickets'
     });
