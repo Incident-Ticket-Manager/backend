@@ -24,17 +24,15 @@ let options = {
 	swaggerDefinition: {
 		info: {
 			description: 'Server api for Incident-Ticket-Manager',
-			title: 'Swagger',
+			title: 'ITM API',
 			version: '1.0.0',
 		},
-		host: 'localhost:3000',
-		basePath: '/',
 		produces: [
 			"application/json",
 		],
 		schemes: ['http', 'https'],
 		securityDefinitions: {
-			JWT: {
+			Bearer: {
 				type: 'apiKey',
 				in: 'header',
 				name: 'Authorization',
