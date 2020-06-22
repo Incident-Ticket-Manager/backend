@@ -81,7 +81,7 @@ async (req, res, next) => {
 
 			user.addProject(project);
 
-			res.json(project.toJSON());
+			res.json(project);
 		}
 		catch(e){
 			res.status(400).json({
