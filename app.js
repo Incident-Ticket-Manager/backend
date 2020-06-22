@@ -4,13 +4,14 @@ let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
 
+require('dotenv').config()
+
 let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 let projectsRouter = require('./routes/projects');
 let ticketsRouter = require('./routes/tickets');
 
 let expressJwt = require('express-jwt'); 
-let secret = "change me please";
 
 let app = express();
 let expressSwagger = require('express-swagger-generator')(app);
@@ -67,7 +68,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json())
 app.use(expressJwt({
-	secret: secret
+	secret: process.env.SECRET
 }).unless({
 	path: [
 		'/users',
