@@ -30,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 			onDelete: 'cascade'
 		});
 		models.ticket.belongsTo(models.user, {
+			foreignKey: 'username',
 			onDelete: 'cascade'
 		});
 	};
