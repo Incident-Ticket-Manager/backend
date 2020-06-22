@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var sequelize = require('../db.js');
+let express = require('express');
+let router = express.Router();
+let sequelize = require('../db.js');
 const { body, validationResult } = require('express-validator');
 
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
-	var users = await sequelize.users.findAll();
+	let users = await sequelize.users.findAll();
 	res.json(users.map((user) => user.toJSON()))
 });
 
@@ -24,7 +24,7 @@ async (req, res, next) => {
 	}
 
 	try{
-		var response = await sequelize.users.create({
+		let response = await sequelize.users.create({
 			username: req.body.username,
 			password: req.body.password,
 			email: req.body.email
