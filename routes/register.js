@@ -18,7 +18,7 @@ async (req, res, next) => {
 	}
 
 	try{
-		let response = await sequelize.user.create({
+		await sequelize.user.create({
 			username: req.body.username,
 			password: req.body.password,
 			email: req.body.email

@@ -15,21 +15,36 @@ async (req, res, next) => {
 		});
 	}
 
-	try{
-		let response = await sequelize.project.create({
-			name: req.body.name,
-			user: req.body.username
-		});
+	let user = await sequelize.user.findOne({
+		where: {
+			username: req.user.username
+		}
+	})
 
-		res.json(response.toJSON());
+	if(user != null){
+		try{
+			let project = await sequelize.project.create({
+				name: req.body.name,
+			});
+
+			user.addProject(project);
+
+			res.json(project.toJSON());
+		}
+		catch(e){
+			res.status(400).json({
+				error: 'This project name is already used'
+			});
+		}
+
+		res.status(200).end();
 	}
-	catch(e){
+	else {
 		res.status(400).json({
-			error: 'This project name is already used'
+			error: 'This user doesn\'t exist'
 		});
 	}
-
-	res.status(200).end();
+	
 });
 
 module.exports = router;
