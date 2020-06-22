@@ -8,6 +8,37 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+var expressSwagger = require('express-swagger-generator')(app);
+
+// Swagger engine setup
+let options = {
+  swaggerDefinition: {
+    info: {
+      description: 'This is a sample server',
+      title: 'Swagger',
+      version: '1.0.0',
+    },
+    host: 'localhost:3000',
+    basePath: '/v1',
+    produces: [
+      "application/json",
+      "application/xml"
+    ],
+    schemes: ['http', 'https'],
+    securityDefinitions: {
+      JWT: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'Authorization',
+        description: "",
+      }
+    }
+  },
+  basedir: __dirname, //app absolute path
+  files: ['./routes/**/*.js'] //Path to the API handle folder
+};
+expressSwagger(options)
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -28,8 +59,18 @@ app.use(function(req, res, next) {
 });
 
 // error handler
+/**
+ * This function comment is parsed by doctrine
+ * @route GET /api
+ * @group foo - Operations about user
+ * @param {string} email.query.required - username or email - eg: user@domain
+ * @param {string} password.query.required - user's password.
+ * @returns {object} 200 - An array of user info
+ * @returns {Error}  default - Unexpected error
+ */
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
+
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
