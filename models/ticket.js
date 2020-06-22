@@ -14,6 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     Ticket.associate = models => {
 		// associations can be defined here
 	};
-	Ticket.sync({force: true});
+	Ticket.sync();
     return Ticket;
 };
