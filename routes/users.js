@@ -11,7 +11,7 @@ router.get('/', async (req, res, next) => {
 
 router.post('/', [
 	body('username').not().isEmpty(),
-	body('password').matches('^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'),
+	body('password').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
 	body('email').isEmail()
 ],
 async (req, res, next) => {
