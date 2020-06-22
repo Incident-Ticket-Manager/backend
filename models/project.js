@@ -14,9 +14,8 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'projects'
     });
     Project.associate = models => {
-		// associations can be defined here
-		models.project.hasMany(models.ticket, { as: 'project_tickets' });
+		models.project.hasMany(models.ticket);
+		models.project.belongsToMany(models.user, { through: models.userProjects });
 	};
-	Project.sync();
     return Project;
 };
