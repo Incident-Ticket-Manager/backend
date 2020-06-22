@@ -9,7 +9,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.UUID,
 			defaultValue: Sequelize.UUIDV1,
 		},
-        username: DataTypes.STRING,
+        username: {
+			type: DataTypes.STRING,
+			unique: true
+		},
 		password: DataTypes.STRING,
 		email: {
 			type: DataTypes.STRING,
