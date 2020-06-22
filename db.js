@@ -26,11 +26,14 @@ fs.readdirSync(dir)
 		db[model.name] = model;
 	});
 
-Object.keys(db).forEach(modelName => {
-	let model = db[modelName];
+Object.values(db).forEach(model => {
 	if (model.associate) {
 		model.associate(db);
 	}
+});
+
+Object.values(db).forEach(model => {
+	model.sync();
 });
 
 db.sequelize = sequelize;

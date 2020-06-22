@@ -15,8 +15,15 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'tickets'
     });
     Ticket.associate = models => {
-		// associations can be defined here
+		models.ticket.belongsTo(models.client, {
+			onDelete: 'cascade'
+		});
+		models.ticket.belongsTo(models.project, {
+			onDelete: 'cascade'
+		});
+		models.ticket.belongsTo(models.user, {
+			onDelete: 'cascade'
+		});
 	};
-	Ticket.sync();
-    return Ticket;
+	return Ticket;
 };
