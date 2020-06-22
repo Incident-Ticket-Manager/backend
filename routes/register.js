@@ -32,6 +32,8 @@ async (req, res, next) => {
 			error: 'This username is already used'
 		});
 	}
+
+	res.status(500).end();
 });
 
 module.exports = router;
