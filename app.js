@@ -1,16 +1,19 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var projectsRouter = require('./routes/projects');
-var ticketsRouter = require('./routes/tickets');
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
+let projectsRouter = require('./routes/projects');
+let ticketsRouter = require('./routes/tickets');
 
-var app = express();
-var expressSwagger = require('express-swagger-generator')(app);
+let expressJwt = require('express-jwt'); 
+let secret = "change me please";
+
+let app = express();
+let expressSwagger = require('express-swagger-generator')(app);
 
 const { sequelize } = require('./db.js');
 
@@ -63,6 +66,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json())
+app.use(expressJwt({
+	secret: secret
+}).unless({
+	path: [
+		'/users',
+	]
+}));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
