@@ -5,7 +5,12 @@ class User extends Model {}
 User.init({
     username: DataTypes.STRING,
     password: DataTypes.STRING,
-    email: DataTypes.STRING
+    email: {
+		type: DataTypes.STRING,
+		validate: {
+			isEmail: true,
+		}
+	}
 }, { sequelize, modelName: 'user' });
 
 User.sync({force: true});
