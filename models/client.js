@@ -2,6 +2,10 @@
 
 module.exports = (sequelize, DataTypes) => {
     const Client = sequelize.define('clients', {
+		id: {
+			primaryKey: true,
+			type: DataTypes.UUID
+		},
 		name: DataTypes.STRING,
 		email: {
 			type: DataTypes.STRING,
@@ -15,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'clients'
     });
     Client.associate = models => {
-        // associations can be defined here
+		// associations can be defined here
+		models.clients.hasMany(models.tickets);
 	};
 	Client.sync({force: true});
     return Client;
