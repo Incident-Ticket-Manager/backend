@@ -1,14 +1,7 @@
 let express = require('express');
 let router = express.Router();
-let sequelize = require('../db.js');
-let jwt = require('jsonwebtoken'); 
+let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
-
-/* GET users listing. */
-router.get('/', async (req, res, next) => {
-	let users = await sequelize.users.findAll();
-	res.json(users.map((user) => user.toJSON()))
-});
 
 router.post('/', [
 	body('username').not().isEmpty(),
@@ -31,14 +24,7 @@ async (req, res, next) => {
 			email: req.body.email
 		});
 
-		var token = jwt.sign({
-			username: req.body.username
-		}, process.env.SECRET);
-
-		res.json({
-			username: req.body.username,
-			token: token
-		});
+		res.status(200).end();
 	}
 	catch(e){
 		console.log(e);
