@@ -6,6 +6,7 @@ const { body, validationResult } = require('express-validator');
 /**
  * @typedef ProjectDTO
  * @property {string} name - Name of the project
+ * @property {string} admin - Admin name of the project
  */
 
 /**
@@ -77,9 +78,10 @@ async (req, res, next) => {
 		try{
 			let project = await sequelize.project.create({
 				name: req.body.name,
+				admin: user.username
 			});
 
-			user.addProject(project);
+			await user.addProject(project);
 
 			res.json(project);
 		}
@@ -108,13 +110,13 @@ async (req, res, next) => {
  * @consumes application/json
  * @produces application/json
  * @returns {ProjectDTO.model} 200 - Project
- * @returns {Error.model} 400 - Project doesn't exists or name is already used
+ * @returns {Error.model} 400 - Project doesn't exists, the name is already used or you are not the admin of the project
  * @returns 401 - User not authentified
  * @security JWT
  */
 router.put('/', [
 	body('name').not().isEmpty(),
-	body('newName').not().isEmpty()
+	body('newName').not().isEmpty(),
 ],
 async (req, res, next) => {
 
@@ -125,31 +127,45 @@ async (req, res, next) => {
 		});
 	}
 
-	try {
-		var data = await sequelize.project.update({
-			name: req.body.newName
-		}, {
-			where: {
-				name: req.body.name
-			},
-		});
-
-		if(data[0]) {
-			res.json(await sequelize.project.findOne({
-				where: {
-					name: req.body.newName
-				}
-			}));
+	let project  = await sequelize.project.findOne({
+		where: {
+			name: req.body.name
 		}
-		else{
+	});
+
+	if(project != null) {
+
+		if(project.admin == req.user.username) {
+			try {
+				await sequelize.project.update({
+					name: req.body.newName
+				}, {
+					where: {
+						name: req.body.name
+					},
+				});
+
+				res.json(await sequelize.project.findOne({
+					where: {
+						name: req.body.newName
+					}
+				}));
+			}
+			catch(e){
+				res.status(400).json({
+					error: 'This project name is already used'
+				});
+			}
+		}
+		else {
 			res.status(400).json({
-				error: 'This project doesn\'t exists'
+				error: 'You are not the admin of this project'
 			});
 		}
 	}
-	catch(e){
+	else{
 		res.status(400).json({
-			error: 'This project name is already used'
+			error: 'This project doesn\'t exists'
 		});
 	}
 });
@@ -167,7 +183,7 @@ async (req, res, next) => {
  * @consumes application/json
  * @produces application/json
  * @returns 200 - Project deleted
- * @returns {Error.model} 400 - This project doesn't exists
+ * @returns {Error.model} 400 - This project doesn't exists or you are not the admin of the project
  * @returns 401 - User not authentified
  * @security JWT
  */
@@ -183,14 +199,163 @@ async (req, res, next) => {
 		});
 	}
 
-	let project = await sequelize.project.destroy({
+	let project  = await sequelize.project.findOne({
 		where: {
-			name: req.body.name,
+			name: req.body.name
 		}
 	});
 
-	if(project) {
-		res.json();
+	if(project != null) {
+		if(project.admin = req.user.username){
+			await project.destroy();
+			res.json();
+		}
+		else {
+			res.status(400).json({
+				error: 'You are not the admin of this project'
+			});
+		}
+	}
+	else {
+		res.status(400).json({
+			error: 'This project doesn\'t exists'
+		});
+	}
+});
+
+/**
+ * @typedef UserProjectDTO
+ * @property {string} user - Name of the user
+ * @property {string} project - Name of the project
+ */
+
+/**
+ * Add a user to a project
+ * @route POST /projects/user
+ * @group Projects
+ * @param {UserProjectDTO.model} project.body.required
+ * @consumes application/json
+ * @produces application/json
+ * @returns 200 - Project deleted
+ * @returns {Error.model} 400 - This user, the project doesn't exists or you are not the admin of the project
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
+router.post('/user', [
+	body('user').not().isEmpty(),
+	body('project').not().isEmpty()
+],
+async (req, res, next) => {
+
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array() 
+		});
+	}
+
+	let project = await sequelize.project.findOne({
+		where: {
+			name: req.body.project,
+		}
+	});
+
+	if(project != null) {
+		if(project.admin == req.user.username) {
+			let user = await sequelize.user.findOne({
+				where: {
+					username: req.body.user,
+				}
+			});
+
+			if(user != null){
+
+				await user.addProject(project);
+
+				res.json();
+			}
+			else {
+				res.status(400).json({
+					error: 'This user doesn\'t exists'
+				});
+			}
+		}
+		else {
+			res.status(400).json({
+				error: 'You are not the admin of the project'
+			});
+		}
+	}
+	else {
+		res.status(400).json({
+			error: 'This project doesn\'t exists'
+		});
+	}
+});
+
+/**
+ * Remove a user from a project
+ * @route DELETE /projects/user
+ * @group Projects
+ * @param {UserProjectDTO.model} project.body.required
+ * @consumes application/json
+ * @produces application/json
+ * @returns 200 - Project deleted
+ * @returns {Error.model} 400 - This user, the project doesn't exists, not admin, don't remove yourself
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
+router.delete('/user', [
+	body('user').not().isEmpty(),
+	body('project').not().isEmpty()
+],
+async (req, res, next) => {
+
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array() 
+		});
+	}
+
+	let project = await sequelize.project.findOne({
+		where: {
+			name: req.body.project,
+		}
+	});
+
+	if(project != null) {
+		if(project.admin == req.user.username) {
+			if(project.admin == req.body.user){
+				res.status(400).json({
+					error: 'You can\'t remove yourself'
+				});
+			}
+			else {
+				let user = await sequelize.user.findOne({
+					where: {
+						username: req.body.user,
+					}
+				});
+
+				if(user != null){
+
+					await user.removeProject(project);
+
+					res.json();
+				}
+				else {
+					res.status(400).json({
+						error: 'This user doesn\'t exists'
+					});
+				}
+			}
+		}
+		else {
+			res.status(400).json({
+				error: 'You are not the admin of the project'
+			});
+		}
 	}
 	else {
 		res.status(400).json({
