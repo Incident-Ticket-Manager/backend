@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'clients'
     });
     Client.associate = models => {
+		models.client.hasOne(models.ticket, {
+			foreignKey: 'clientId'
+		});
 	};
     return Client;
 };
