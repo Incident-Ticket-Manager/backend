@@ -8,12 +8,20 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 			type: DataTypes.STRING,
 		},
+		admin: {
+			type: DataTypes.STRING,
+		},
     }, {
         tableName: 'projects'
     });
     Project.associate = models => {
 		models.project.belongsToMany(models.user, { 
 			foreignKey: 'projectName',
+			through: models.userProjects 
+		});
+
+		models.project.belongsTo(models.user, { 
+			foreignKey: 'admin',
 			through: models.userProjects 
 		});
 
