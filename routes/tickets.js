@@ -16,7 +16,7 @@ const { body, validationResult } = require('express-validator');
  * @property {string} title - Title of the ticket
  * @property {string} content - Content of the ticket
  * @property {enum} status - Status of the ticket - eg: Open, In progress, Resolved
- * @property {string} username - Assigned user
+ * @property {string} userName - Assigned user
  * @property {string} projectName - Project of the ticket
  * @property {string} clientId - The client id who create the ticket
  * @property {ClientDTO.model} client - Client who created the ticket
