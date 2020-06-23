@@ -5,6 +5,7 @@ const { body, validationResult } = require('express-validator');
 
 /**
  * @typedef ClientDTO
+ * @property {string} id - Id of the client
  * @property {string} name - Name of the client
  * @property {string} email - Email of the client
  * @property {string} phone - Phone of the client
@@ -13,6 +14,7 @@ const { body, validationResult } = require('express-validator');
 
 /**
  * @typedef TicketDTO
+ * @property {string} id - Id of the ticket
  * @property {string} title - Title of the ticket
  * @property {string} content - Content of the ticket
  * @property {enum} status - Status of the ticket - eg: Open, In progress, Resolved
