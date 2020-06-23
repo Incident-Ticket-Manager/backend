@@ -11,6 +11,7 @@ let registerRouter = require('./routes/register');
 let loginRouter = require('./routes/login');
 let projectsRouter = require('./routes/projects');
 let ticketsRouter = require('./routes/tickets');
+let clientsRouter = require('./routes/clients');
 
 let expressJwt = require('express-jwt'); 
 
@@ -84,6 +85,7 @@ app.use('/', indexRouter);
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/projects', projectsRouter);
+app.use('/clients', clientsRouter);
 app.use('/tickets', ticketsRouter);
 
 // catch 404 and forward to error handler
