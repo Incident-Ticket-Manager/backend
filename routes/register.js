@@ -50,7 +50,7 @@ async (req, res, next) => {
 	}
 	catch(e){
 		res.status(400).json({
-			error: 'This username is already used'
+			error: 'This username or this email is already used'
 		});
 	}
 });
