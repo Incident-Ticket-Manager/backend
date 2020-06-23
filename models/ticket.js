@@ -24,12 +24,15 @@ module.exports = (sequelize, DataTypes) => {
     });
     Ticket.associate = models => {
 		models.ticket.belongsTo(models.client, {
+			foreignKey: 'clientId',
 			onDelete: 'cascade'
 		});
 		models.ticket.belongsTo(models.project, {
+			foreignKey: 'projectName',
 			onDelete: 'cascade'
 		});
 		models.ticket.belongsTo(models.user, {
+			foreignKey: 'userName',
 			onDelete: 'cascade'
 		});
 	};

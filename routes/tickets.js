@@ -41,23 +41,28 @@ const { body, validationResult } = require('express-validator');
  */
 router.get('/', async (req, res, next) => {
 
-	let user = await sequelize.user.findOne({
-		where: {
-			username: req.user.username
-		},
-		include: [
-			{
-				model: sequelize.ticket,
-				include: sequelize.client
+	try{
+		let user = await sequelize.user.findOne({
+			where: {
+				username: req.user.username
 			},
-		]
-	});
+			include: [
+				{
+					model: sequelize.ticket,
+					include: sequelize.client
+				},
+			]
+		});
 
-	if(user != null) {
-		res.json(user.tickets);
+		if(user != null) {
+			res.json(user.tickets);
+		}
+		else {
+			res.status(401).json();
+		}
 	}
-	else {
-		res.status(401).json();
+	catch(e){
+		res.json([]);
 	}
 });
 
@@ -122,9 +127,9 @@ async (req, res, next) => {
 		let ticket = await sequelize.ticket.create({
 			title: req.body.title,
 			content: req.body.content,
+			clientId: client.id
 		});
 
-		client.addTicket(ticket);
 		project.addTicket(ticket);
 
 		let json = ticket.toJSON();
