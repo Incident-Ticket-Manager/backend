@@ -12,9 +12,14 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'projects'
     });
     Project.associate = models => {
-		models.project.belongsToMany(models.user, { through: models.userProjects });
-		models.project.hasMany(models.ticket);
-		models.project.hasMany(models.user);
+		models.project.belongsToMany(models.user, { 
+			foreignKey: 'projectName',
+			through: models.userProjects 
+		});
+
+		models.project.hasMany(models.ticket, {
+			foreignKey: 'projectName'
+		});
 	};
     return Project;
 };
