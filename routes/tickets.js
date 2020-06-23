@@ -125,7 +125,7 @@ async (req, res, next) => {
 			clientId: client.id
 		});
 
-		project.addTicket(ticket);
+		await project.addTicket(ticket);
 
 		let json = ticket.toJSON();
 		json.client = client.toJSON();
@@ -141,7 +141,7 @@ async (req, res, next) => {
 
 /**
  * Assign a ticket to a user
- * @route POSt /tickets/assign
+ * @route POST /tickets/assign
  * @group Tickets
  * @param {string} ticket.body.required
  * @consumes application/json
