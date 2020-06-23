@@ -16,6 +16,9 @@ let sequelize = new Sequelize(process.env.DATABASE_URL, {
 			rejectUnauthorized: false
 		}
 	},
+	define: {
+		timestamps: false
+	}
 });
 
 let dir = __dirname + "/models";
