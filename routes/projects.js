@@ -73,7 +73,7 @@ router.get('/', async (req, res, next) => {
  */
 
 /**
- * Get on project with his name
+ * Get one project with his name
  * @route GET /projects/:name
  * @group Projects
  * @param {string} name
