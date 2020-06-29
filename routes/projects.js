@@ -71,6 +71,7 @@ router.get('/', async (req, res, next) => {
  * @property {string} name - Name of the project
  * @property {string} admin - Admin name of the project
  * @property {Array.<TicketDTO>} tickets - Tickets of the project
+ * @property {object} stats - Tickets stats
  */
 
 /**
