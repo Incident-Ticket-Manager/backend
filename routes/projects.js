@@ -8,6 +8,7 @@ const { body, validationResult } = require('express-validator');
  * @property {string} name - Name of the project
  * @property {string} admin - Admin name of the project
  * @property {string} date - Creation date of the project
+ * @property {bool} isAdmin - If the current user is the admin
  */
 
 /**
@@ -37,7 +38,13 @@ router.get('/', async (req, res, next) => {
 	});
 
 	if(user != null) {
-		res.json(user.projects);
+		let projects = [];
+		user.projects.forEach((e) => {
+			let project = e.toJSON();
+			project.isAdmin = project.admin == req.user.username;
+			projects.push(project);
+		})
+		res.json(projects);
 	}
 	else {
 		res.status(401).json();
@@ -70,26 +77,27 @@ router.get('/', async (req, res, next) => {
  * @property {string} name - Name of the project
  * @property {string} admin - Admin name of the project
  * @property {string} date - Creation date of the project
+ * @property {bool} isAdmin - If the current user is the admin
  * @property {Array.<TicketDTO>} tickets - Tickets of the project
  * @property {object} stats - Tickets stats
  */
 
 /**
  * Get one project with his name
- * @route GET /projects/:name
+ * @route GET /projects/{projectName}
  * @group Projects
- * @param {string} name
+ * @param {string} projectName.path.required
  * @produces application/json
  * @returns {ProjectFullDTO.model} 200 - Project
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.get('/:name', async (req, res, next) => {
-	if(req.params.name != null) {
+router.get('/:project', async (req, res, next) => {
+	if(req.params.project != null) {
 
 		let project = await sequelize.project.findOne({
 			where: {
-				name: req.params.name
+				name: req.params.project
 			},
 			include: {
 				model: sequelize.ticket,
@@ -114,6 +122,7 @@ router.get('/:name', async (req, res, next) => {
 			});
 
 			let json = project.toJSON();
+			json.isAdmin = project.admin == req.user.username;
 			json.ticketStats = ticketStats;
 
 			res.json(json);
@@ -127,7 +136,7 @@ router.get('/:name', async (req, res, next) => {
 	}
 	else {
 		res.json({
-			error: 'Invalid name'
+			error: 'Project name required'
 		});
 	}
 });
@@ -265,9 +274,9 @@ async (req, res, next) => {
 
 /**
  * Delete a project
- * @route DELETE /projects
+ * @route DELETE /projects/{projectName}
  * @group Projects
- * @param {DeleteProjectDTO.model} project.body.required
+ * @param {string} projectName.path.required
  * @consumes application/json
  * @produces application/json
  * @returns 200 - Project deleted
@@ -275,39 +284,43 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.delete('/', [
-	body('name').not().isEmpty()
-],
-async (req, res, next) => {
+router.delete('/:project', async (req, res, next) => {
 
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
+	if(req.params.project == null) {
+		res.json({
+			error: 'Project name required'
 		});
 	}
-
-	let project  = await sequelize.project.findOne({
-		where: {
-			name: req.body.name
+	else {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				errors: errors.array() 
+			});
 		}
-	});
 
-	if(project != null) {
-		if(project.admin = req.user.username){
-			await project.destroy();
-			res.json();
+		let project  = await sequelize.project.findOne({
+			where: {
+				name: req.params.projet
+			}
+		});
+
+		if(project != null) {
+			if(project.admin = req.user.username){
+				await project.destroy();
+				res.json();
+			}
+			else {
+				res.status(400).json({
+					error: 'You are not the admin of this project'
+				});
+			}
 		}
 		else {
 			res.status(400).json({
-				error: 'You are not the admin of this project'
+				error: 'This project doesn\'t exists'
 			});
 		}
-	}
-	else {
-		res.status(400).json({
-			error: 'This project doesn\'t exists'
-		});
 	}
 });
 
@@ -319,7 +332,7 @@ async (req, res, next) => {
 
 /**
  * Add a user to a project
- * @route POST /projects/user
+ * @route POST /projects/users
  * @group Projects
  * @param {UserProjectDTO.model} project.body.required
  * @consumes application/json
@@ -329,7 +342,7 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.post('/user', [
+router.post('/users', [
 	body('user').not().isEmpty(),
 	body('project').not().isEmpty()
 ],
@@ -383,9 +396,10 @@ async (req, res, next) => {
 
 /**
  * Remove a user from a project
- * @route DELETE /projects/user
+ * @route DELETE /projects/{projectName}/users/{userName}
  * @group Projects
- * @param {UserProjectDTO.model} project.body.required
+ * @param {string} user.path.required
+ * @param {string} project.path.required
  * @consumes application/json
  * @produces application/json
  * @returns 200 - Project deleted
@@ -393,62 +407,65 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.delete('/user', [
-	body('user').not().isEmpty(),
-	body('project').not().isEmpty()
-],
-async (req, res, next) => {
+router.delete('/:project/users/:user', async (req, res, next) => {
 
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
+	if(res.params.project == null || res.params.user == null) {
+		res.json({
+			error: 'Missing project name and user name required'
 		});
 	}
-
-	let project = await sequelize.project.findOne({
-		where: {
-			name: req.body.project,
+	else {
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.status(400).json({
+				errors: errors.array() 
+			});
 		}
-	});
 
-	if(project != null) {
-		if(project.admin == req.user.username) {
-			if(project.admin == req.body.user){
-				res.status(400).json({
-					error: 'You can\'t remove yourself'
-				});
+		let project = await sequelize.project.findOne({
+			where: {
+				name: req.params.project,
 			}
-			else {
-				let user = await sequelize.user.findOne({
-					where: {
-						username: req.body.user,
-					}
-				});
+		});
 
-				if(user != null){
-
-					await user.removeProject(project);
-
-					res.json();
-				}
-				else {
+		if(project != null) {
+			if(project.admin == req.user.username) {
+				if(project.admin == req.params.user){
 					res.status(400).json({
-						error: 'This user doesn\'t exists'
+						error: 'You can\'t remove yourself'
 					});
 				}
+				else {
+					let user = await sequelize.user.findOne({
+						where: {
+							username: req.params.user,
+						}
+					});
+
+					if(user != null){
+
+						await user.removeProject(project);
+
+						res.json();
+					}
+					else {
+						res.status(400).json({
+							error: 'This user doesn\'t exists'
+						});
+					}
+				}
+			}
+			else {
+				res.status(400).json({
+					error: 'You are not the admin of the project'
+				});
 			}
 		}
 		else {
 			res.status(400).json({
-				error: 'You are not the admin of the project'
+				error: 'This project doesn\'t exists'
 			});
 		}
-	}
-	else {
-		res.status(400).json({
-			error: 'This project doesn\'t exists'
-		});
 	}
 });
 
