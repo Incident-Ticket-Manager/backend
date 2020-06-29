@@ -33,7 +33,6 @@ const { body, validationResult } = require('express-validator');
  * Get all tickets of the current user
  * @route GET /tickets
  * @group Tickets
- * @consumes application/json
  * @produces application/json
  * @returns {Array.<TicketDTO>} 200 - Projects
  * @returns 401 - User not authentified
