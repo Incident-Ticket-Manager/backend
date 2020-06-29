@@ -96,11 +96,19 @@ router.get('/:name', async (req, res, next) => {
 			}
 		});
 
-		res.json(project);
+		if(project != null) {
+			res.json(project);
+		}
+		else {
+			res.json({
+				error: 'This project doesn\'t exists'
+			})
+		}
+		
 	}
 	else {
 		res.json({
-			error: "Invalid name"
+			error: 'Invalid name'
 		});
 	}
 });
