@@ -1,3 +1,3 @@
 # backend
 
-Create .env environnement and set SECRET=YOUR_SECRET_TOKEN
+Create .env file and set SECRET=YOUR_SECRET_TOKEN
