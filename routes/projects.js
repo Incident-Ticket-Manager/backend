@@ -100,14 +100,17 @@ router.get('/:name', async (req, res, next) => {
 
 		if(project != null) {
 
-			let ticketStats = {}
+			let ticketStats = {
+				"total": project.tickets.length
+			}
 
 			project.tickets.forEach((ticket) => {
-				if(ticketStats[ticket.status] == null) {
-					ticketStats[ticket.status] = 1;
+				let status = ticket.status.toLowerCase();
+				if(ticketStats[status] == null) {
+					ticketStats[status] = 1;
 				}
 				else {
-					ticketStats[ticket.status]++;
+					ticketStats[status]++;
 				}
 			});
 
