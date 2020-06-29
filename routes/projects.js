@@ -45,6 +45,67 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
+ * @typedef ClientDTO
+ * @property {string} id - Id of the client
+ * @property {string} name - Name of the client
+ * @property {string} email - Email of the client
+ * @property {string} phone - Phone of the client
+ * @property {string} address - Address of the client
+ */
+
+/**
+ * @typedef TicketDTO
+ * @property {string} id - Id of the ticket
+ * @property {string} title - Title of the ticket
+ * @property {string} content - Content of the ticket
+ * @property {enum} status - Status of the ticket - eg: Open, In progress, Resolved
+ * @property {string} userName - Assigned user
+ * @property {string} projectName - Project of the ticket
+ * @property {string} clientId - The client id who create the ticket
+ * @property {ClientDTO.model} client - Client who created the ticket
+ */
+
+/**
+ * @typedef ProjectFullDTO
+ * @property {string} name - Name of the project
+ * @property {string} admin - Admin name of the project
+ * @property {Array.<TicketDTO>} tickets - Tickets of the project
+ */
+
+/**
+ * Get on project with his name
+ * @route GET /projects/:name
+ * @group Projects
+ * @param {string} name
+ * @consumes application/json
+ * @produces application/json
+ * @returns {ProjectFullDTO.model} 200 - Project
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
+router.get('/:name', async (req, res, next) => {
+	if(req.params.name != null) {
+
+		let project = await sequelize.project.findOne({
+			where: {
+				name: req.params.name
+			},
+			include: {
+				model: sequelize.ticket,
+				include: sequelize.client
+			}
+		});
+
+		res.json(project);
+	}
+	else {
+		res.json({
+			error: "Invalid name"
+		});
+	}
+});
+
+/**
  * Add a new project
  * @route POST /projects
  * @group Projects
