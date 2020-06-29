@@ -2,12 +2,12 @@ let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
-const ticket = require('../models/ticket');
 
 /**
  * @typedef ProjectDTO
  * @property {string} name - Name of the project
  * @property {string} admin - Admin name of the project
+ * @property {string} date - Creation date of the project
  */
 
 /**
@@ -19,7 +19,6 @@ const ticket = require('../models/ticket');
  * Get all projects of the current user
  * @route GET /projects
  * @group Projects
- * @consumes application/json
  * @produces application/json
  * @returns {Array.<ProjectDTO>} 200 - Projects
  * @returns 401 - User not authentified
@@ -70,6 +69,7 @@ router.get('/', async (req, res, next) => {
  * @typedef ProjectFullDTO
  * @property {string} name - Name of the project
  * @property {string} admin - Admin name of the project
+ * @property {string} date - Creation date of the project
  * @property {Array.<TicketDTO>} tickets - Tickets of the project
  * @property {object} stats - Tickets stats
  */
@@ -79,7 +79,6 @@ router.get('/', async (req, res, next) => {
  * @route GET /projects/:name
  * @group Projects
  * @param {string} name
- * @consumes application/json
  * @produces application/json
  * @returns {ProjectFullDTO.model} 200 - Project
  * @returns 401 - User not authentified
@@ -167,7 +166,7 @@ async (req, res, next) => {
 		try{
 			let project = await sequelize.project.create({
 				name: req.body.name,
-				admin: user.username
+				admin: user.username,
 			});
 
 			await user.addProject(project);

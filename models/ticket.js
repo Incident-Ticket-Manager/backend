@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
 				'Resolved'
 			),
 			defaultValue: 'Open'
+		},
+		date: {
+			type: DataTypes.DATE,
+			defaultValue: Sequelize.NOW
 		}
     }, {
         tableName: 'tickets'

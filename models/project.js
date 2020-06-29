@@ -8,9 +8,11 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 			type: DataTypes.STRING,
 		},
-		admin: {
-			type: DataTypes.STRING,
-		},
+		admin: DataTypes.STRING,
+		date: {
+			type: DataTypes.DATE,
+			defaultValue: Sequelize.NOW
+		}
     }, {
         tableName: 'projects'
     });
