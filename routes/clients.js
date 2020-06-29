@@ -61,9 +61,9 @@ async (req, res, next) => {
 
 /**
  * Delete a client
- * @route DELETE /clients
+ * @route DELETE /clients/{clientId}
  * @group Clients
- * @param {DeleteClientDTO.model} client.body.required
+ * @param {string} client.path.required
  * @consumes application/json
  * @produces application/json
  * @returns 200 - Project deleted
@@ -71,10 +71,7 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.delete('/', [
-	body('id').not().isEmpty()
-],
-async (req, res, next) => {
+router.delete('/:client', async (req, res, next) => {
 
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
@@ -85,7 +82,7 @@ async (req, res, next) => {
 
 	let client = await sequelize.client.findOne({
 		where: {
-			id: req.body.id
+			id: req.params.client
 		}
 	});
 
