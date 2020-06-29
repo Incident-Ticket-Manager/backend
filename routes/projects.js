@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
+const ticket = require('../models/ticket');
 
 /**
  * @typedef ProjectDTO
@@ -97,7 +98,22 @@ router.get('/:name', async (req, res, next) => {
 		});
 
 		if(project != null) {
-			res.json(project);
+
+			let ticketStats = {}
+
+			project.tickets.forEach((ticket) => {
+				if(ticketStats[ticket.status] == null) {
+					ticketStats[ticket.status] = 1;
+				}
+				else {
+					ticketStats[ticket.status]++;
+				}
+			});
+
+			let json = project.toJSON();
+			json.ticketStats = ticketStats;
+
+			res.json(json);
 		}
 		else {
 			res.json({
