@@ -32,7 +32,7 @@ let options = {
 		produces: [
 			"application/json",
 		],
-		host: 'api-mpm.herokuapp.com',
+		host: 'api-itm.herokuapp.com',
 		schemes: ['https'],
 		securityDefinitions: {
 			JWT: {
