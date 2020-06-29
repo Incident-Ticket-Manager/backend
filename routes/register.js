@@ -27,7 +27,7 @@ const { body, validationResult } = require('express-validator');
  */
 router.post('/', [
 	body('username').not().isEmpty(),
-	body('password').matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
+	body('password').matches(/^(?=.*?[A-Z])(?=(.*[a-z]))(?=(.*[\d]))(?!.*\s).{8,}$/),
 	body('email').isEmail()
 ],
 async (req, res, next) => {
