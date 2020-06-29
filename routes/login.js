@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
-let jwt = require('jsonwebtoken'); 
+let jwt = require('jsonwebtoken');
 
 /**
  * @typedef LoginDTO
