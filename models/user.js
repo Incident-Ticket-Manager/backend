@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
 
 		models.user.hasMany(models.ticket, {
 			foreignKey: 'userName',
-			onDelete: 'cascade',
+			onDelete: 'set null',
 			onUpdate: 'cascade'
 		});
 	};
