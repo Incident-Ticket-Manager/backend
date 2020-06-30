@@ -4,12 +4,27 @@ let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
 
 /**
- * @typedef ClientDTO
+ * @typedef CClientDTO
  * @property {string} name - Name of the client
  * @property {string} email - Email name of the client
  * @property {string} phone - Phone name of the client
  * @property {string} address - Address name of the client
  */
+
+/**
+ * Get all clients
+ * @route GET /clients
+ * @group Clients
+ * @consumes application/json
+ * @produces application/json
+ * @returns {Array.<ClientDTO>} 200 - List of clients
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
+router.get('/', async (req, res, next) => {
+	let clients = await sequelize.client.findAll();
+	res.json(clients);
+});
 
 /**
  * @typedef Error
@@ -20,7 +35,7 @@ const { body, validationResult } = require('express-validator');
  * Add a client
  * @route POST /clients
  * @group Clients
- * @param {ClientDTO.model} client.body.required
+ * @param {CClientDTO.model} client.body.required
  * @consumes application/json
  * @produces application/json
  * @returns {ClientDTO.model} 200 - Client
