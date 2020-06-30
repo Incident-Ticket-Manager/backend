@@ -3,6 +3,7 @@ let router = express.Router();
 let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
 let jwt = require('jsonwebtoken');
+let crypto = require('crypto');
 
 /**
  * @typedef LoginDTO
@@ -44,10 +45,12 @@ async (req, res, next) => {
 		});
 	}
 
+	let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+
 	let user = await sequelize.user.findOne({
 		where: {
 			username: req.body.username,
-			password: req.body.password
+			password: password
 		}
 	});
 
@@ -58,6 +61,7 @@ async (req, res, next) => {
 
 		res.json({
 			username: user.username,
+			admin: user.admin,
 			token: token
 		});
 	}

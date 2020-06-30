@@ -15,10 +15,15 @@ module.exports = (sequelize, DataTypes) => {
 			validate: {
 				isEmail: true,
 			}
+		},
+		admin: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false
 		}
     }, {
         tableName: 'users'
-    });
+	});
+
     User.associate = models => {
 		models.user.belongsToMany(models.project, { 
 			foreignKey: 'userName',

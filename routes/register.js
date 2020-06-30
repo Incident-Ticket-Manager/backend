@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
 const { body, validationResult } = require('express-validator');
+let crypto = require('crypto');
 
 /**
  * @typedef RegisterDTO
@@ -40,9 +41,10 @@ async (req, res, next) => {
 	}
 
 	try{
+		let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 		await sequelize.user.create({
 			username: req.body.username,
-			password: req.body.password,
+			password: password,
 			email: req.body.email
 		});
 
