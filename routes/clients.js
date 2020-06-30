@@ -27,11 +27,6 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
- * @typedef Error
- * @property {string} error - Register error
- */
-
-/**
  * Add a client
  * @route POST /clients
  * @group Clients

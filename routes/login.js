@@ -18,11 +18,6 @@ let crypto = require('crypto');
  */
 
 /**
- * @typedef Error
- * @property {string} error - Register error
- */
-
-/**
  * Login
  * @route POST /login
  * @group Authentification

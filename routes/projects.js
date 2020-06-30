@@ -12,11 +12,6 @@ const { body, validationResult } = require('express-validator');
  */
 
 /**
- * @typedef Error
- * @property {string} error - Register error
- */
-
-/**
  * Get all projects of the current user
  * @route GET /projects
  * @group Projects
