@@ -19,16 +19,22 @@ module.exports = (sequelize, DataTypes) => {
     Project.associate = models => {
 		models.project.belongsToMany(models.user, { 
 			foreignKey: 'projectName',
-			through: models.userProjects 
+			through: models.userProjects,
+			onDelete: 'cascade',
+			onUpdate: 'cascade'
 		});
 
 		models.project.belongsTo(models.user, { 
 			foreignKey: 'admin',
-			through: models.userProjects 
+			through: models.userProjects,
+			onDelete: 'cascade',
+			onUpdate: 'cascade'
 		});
 
 		models.project.hasMany(models.ticket, {
-			foreignKey: 'projectName'
+			foreignKey: 'projectName',
+			onDelete: 'cascade',
+			onUpdate: 'cascade'
 		});
 	};
     return Project;

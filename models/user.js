@@ -27,11 +27,15 @@ module.exports = (sequelize, DataTypes) => {
     User.associate = models => {
 		models.user.belongsToMany(models.project, { 
 			foreignKey: 'userName',
-			through: models.userProjects 
+			through: models.userProjects,
+			onDelete: 'cascade',
+			onUpdate: 'cascade'
 		});
 
 		models.user.hasMany(models.ticket, {
-			foreignKey: 'userName'
+			foreignKey: 'userName',
+			onDelete: 'cascade',
+			onUpdate: 'cascade'
 		});
 	};
     return User;
