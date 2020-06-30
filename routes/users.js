@@ -38,3 +38,5 @@ router.delete('/:user', async (req, res, next) =>{
 		});
 	}
 });
+
+module.exports = router;
