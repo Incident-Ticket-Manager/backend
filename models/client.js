@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
         tableName: 'clients'
     });
     Client.associate = models => {
-		models.client.hasOne(models.ticket, {
+		models.client.hasMany(models.ticket, {
 			foreignKey: 'clientId'
 		});
 	};
