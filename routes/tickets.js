@@ -132,7 +132,7 @@ async (req, res, next) => {
  * @consumes application/json
  * @produces application/json
  * @returns {TicketDTO.model} 200 - Ticket
- * @returns {Error.model} 400 - Ticket doesn't exists or ticket is already assigned or user doesn't exists
+ * @returns {Error.model} 400 - Ticket doesn't exists or ticket is already assigned
  * @returns 401 - User not authentified
  * @security JWT
  */
@@ -188,7 +188,7 @@ router.post('/assign', [
  * @consumes application/json
  * @produces application/json
  * @returns {TicketDTO.model} 200 - Ticket
- * @returns {Error.model} 400 - Ticket doesn't exists or ticket is already assigned or user doesn't exists
+ * @returns {Error.model} 400 - Ticket or user doesn't exists
  * @returns 401 - User not authentified
  * @security JWT
  */
