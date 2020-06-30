@@ -299,7 +299,7 @@ router.delete('/:project', async (req, res, next) => {
 
 		let project  = await sequelize.project.findOne({
 			where: {
-				name: req.params.projet
+				name: req.params.project
 			}
 		});
 
