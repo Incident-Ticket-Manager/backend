@@ -56,7 +56,8 @@ async (req, res, next) => {
 
 	if(user != null){
 		let token = jwt.sign({
-			username: user.username
+			username: user.username,
+			admin: user.admin
 		}, process.env.SECRET);
 
 		res.json({
