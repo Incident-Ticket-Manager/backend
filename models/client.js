@@ -23,7 +23,9 @@ module.exports = (sequelize, DataTypes) => {
     });
     Client.associate = models => {
 		models.client.hasMany(models.ticket, {
-			foreignKey: 'clientId'
+			foreignKey: 'clientId',
+			onDelete: 'cascade',
+			onUpdate: 'cascade'
 		});
 	};
     return Client;
