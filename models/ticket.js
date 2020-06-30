@@ -31,10 +31,12 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: 'clientId',
 			onDelete: 'cascade'
 		});
+
 		models.ticket.belongsTo(models.project, {
 			foreignKey: 'projectName',
 			onDelete: 'cascade'
 		});
+		
 		models.ticket.belongsTo(models.user, {
 			foreignKey: 'userName',
 			onDelete: 'cascade'
