@@ -213,12 +213,12 @@ router.post('/assignto', [
 	if(ticket != null) {
 		let user = await sequelize.user.findOne({
 			where: {
-				username: req.params.user
+				username: req.body.user
 			}
 		});
 
 		if(user != null) {
-			ticket.userName = req.params.user;
+			ticket.userName = req.body.user;
 			ticket.status = 'In progress';
 			ticket = await ticket.save();
 
