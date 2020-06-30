@@ -12,6 +12,15 @@ const { body, validationResult } = require('express-validator');
  */
 
 /**
+ * @typedef ClientDTO
+ * @property {string} id - Id of the client
+ * @property {string} name - Name of the client
+ * @property {string} email - Email of the client
+ * @property {string} phone - Phone of the client
+ * @property {string} address - Address of the client
+ */
+
+/**
  * Get all clients
  * @route GET /clients
  * @group Clients

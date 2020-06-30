@@ -47,15 +47,6 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
- * @typedef ClientDTO
- * @property {string} id - Id of the client
- * @property {string} name - Name of the client
- * @property {string} email - Email of the client
- * @property {string} phone - Phone of the client
- * @property {string} address - Address of the client
- */
-
-/**
  * @typedef TicketDTO
  * @property {string} id - Id of the ticket
  * @property {string} title - Title of the ticket
