@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator');
 
 /**
  * Delete user
- * @route DELETE /users
+ * @route DELETE /users/{userName}
  * @group Users
  * @consumes application/json
  * @produces application/json
