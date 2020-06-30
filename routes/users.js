@@ -18,7 +18,7 @@ router.delete('/:user', async (req, res, next) =>{
 	if(req.user.admin) {
 		let user = await sequelize.user.findOne({
 			where: {
-				id: req.params.user
+				name: req.params.user
 			}
 		});
 
