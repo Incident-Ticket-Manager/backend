@@ -89,7 +89,7 @@ app.use(expressJwt({
 app.use('/', indexRouter);
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
-app.use('/users', loginRouter);
+app.use('/users', usersRouter);
 app.use('/projects', projectsRouter);
 app.use('/clients', clientsRouter);
 app.use('/tickets', ticketsRouter);
