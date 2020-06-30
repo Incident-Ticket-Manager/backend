@@ -65,10 +65,7 @@ router.get('/', async (req, res, next) => {
  * @property {string} project - Name of the project
  * @property {string} title - Title of the ticket
  * @property {string} content - Content of the ticket
- * @property {string} name - Name of the client
- * @property {string} email - Email of the client
- * @property {string} phone - Phone of the client
- * @property {string} address - Address of the client
+ * @property {string} client - Id of the client
  */
 
 /**
@@ -79,7 +76,7 @@ router.get('/', async (req, res, next) => {
  * @consumes application/json
  * @produces application/json
  * @returns {TicketDTO.model} 200 - Ticket
- * @returns {Error.model} 400 - Project doesn't exists
+ * @returns {Error.model} 400 - Project or client doesn't exists
  * @returns 401 - User not authentified
  * @security JWT
  */
@@ -87,10 +84,7 @@ router.post('/', [
 	//project
 	body('project').not().isEmpty(),
 	//client
-	body('name').not().isEmpty(),
-	body('email').isEmail(),
-	body('phone').isMobilePhone(),
-	body('address').not().isEmpty(),
+	body('client').not().isEmpty(),
 	//ticket
 	body('title').not().isEmpty(),
 	body('content').not().isEmpty(),
@@ -111,25 +105,31 @@ async (req, res, next) => {
 	});
 
 	if(project != null){
-		let client = await sequelize.client.create({
-			name: req.body.name,
-			email: req.body.email,
-			phone: req.body.phone,
-			address: req.body.address,
+		let client = await sequelize.client.findOne({
+			where: {
+				id: req.body.client
+			}
 		});
 
-		let ticket = await sequelize.ticket.create({
-			title: req.body.title,
-			content: req.body.content,
-			clientId: client.id
-		});
+		if(client != null) {
+			let ticket = await sequelize.ticket.create({
+				title: req.body.title,
+				content: req.body.content,
+				clientId: client.id
+			});
 
-		await project.addTicket(ticket);
+			await project.addTicket(ticket);
 
-		let json = ticket.toJSON();
-		json.client = client.toJSON();
+			let json = ticket.toJSON();
+			json.client = client.toJSON();
 
-		res.json(json);
+			res.json(json);
+		}
+		else {
+			res.status(400).json({
+				error: 'This client doesn\'t exists'
+			});
+		}
 	}
 	else {
 		res.status(400).json({
