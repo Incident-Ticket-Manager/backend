@@ -25,11 +25,6 @@ const { body, validationResult } = require('express-validator');
  */
 
 /**
- * @typedef Error
- * @property {string} error - Register error
- */
-
-/**
  * Get all tickets of the current user
  * @route GET /tickets
  * @group Tickets
