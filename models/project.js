@@ -20,13 +20,11 @@ module.exports = (sequelize, DataTypes) => {
 		models.project.belongsToMany(models.user, { 
 			foreignKey: 'projectName',
 			through: models.userProjects,
-			onDelete: 'cascade',
 			onUpdate: 'cascade'
 		});
 
 		models.project.belongsTo(models.user, { 
 			foreignKey: 'admin',
-			through: models.userProjects,
 			onDelete: 'cascade',
 			onUpdate: 'cascade'
 		});

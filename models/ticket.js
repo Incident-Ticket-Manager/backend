@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
 		
 		models.ticket.belongsTo(models.user, {
 			foreignKey: 'userName',
-			onDelete: 'cascade',
+			onDelete: 'set null',
 			onUpdate: 'cascade'
 		});
 	};
