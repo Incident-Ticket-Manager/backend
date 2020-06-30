@@ -125,7 +125,7 @@ async (req, res, next) => {
 });
 
 /**
- * Assign a ticket to a user
+ * Assign a ticket to me
  * @route POST /tickets/assign
  * @group Tickets
  * @param {string} ticket.body.required
@@ -155,28 +155,78 @@ router.post('/assign', [
 
 	if(ticket != null) {
 		if(ticket.userName == null) {
-			let user = await sequelize.user.findOne({
-				where: {
-					username: req.user.username
-				}
-			});
+			ticket.userName = req.user.username;
+			ticket.status = 'In progress';
+			ticket = await ticket.save();
 
-			if(user != null) {
-				ticket.userName = user.username;
-				ticket.status = 'In progress';
-				ticket = await ticket.save();
-
-				res.json(ticket);
-			}
-			else {
-				res.status(400).json({
-					error: 'This user doesn\'t exists'
-				});
-			}
+			res.json(ticket);
 		}
 		else {
 			res.status(400).json({
 				error: 'This ticket is already assigned'
+			});
+		}
+	}
+	else {
+		res.status(400).json({
+			error: 'This ticket doesn\'t exists'
+		});
+	}
+});
+
+/**
+ * @typedef AssignTicketDTO
+ * @property {string} ticket - Id of the ticket
+ * @property {string} name - Name of the user
+ */
+
+/**
+ * Assign a ticket to a user
+ * @route POST /tickets/assignto
+ * @group Tickets
+ * @param {AssignTicketDTO.model} assign.body.required
+ * @consumes application/json
+ * @produces application/json
+ * @returns {TicketDTO.model} 200 - Ticket
+ * @returns {Error.model} 400 - Ticket doesn't exists or ticket is already assigned or user doesn't exists
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
+router.post('/assignto', [
+	body('ticket').not().isEmpty(),
+	body('user').not().isEmpty(),
+], async (req, res, next) => {
+
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array() 
+		});
+	}
+
+	let ticket = await sequelize.ticket.findOne({
+		where: {
+			id: req.body.ticket
+		}
+	});
+
+	if(ticket != null) {
+		let user = await sequelize.user.findOne({
+			where: {
+				username: req.params.user
+			}
+		});
+
+		if(user != null) {
+			ticket.userName = req.params.user;
+			ticket.status = 'In progress';
+			ticket = await ticket.save();
+
+			res.json(ticket);
+		}
+		else {
+			res.status(400).json({
+				error: 'This user doesn\'t exists'
 			});
 		}
 	}
