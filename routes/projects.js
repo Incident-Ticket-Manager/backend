@@ -108,17 +108,15 @@ router.get('/:project', async (req, res, next) => {
 		if(project != null) {
 
 			let ticketStats = {
-				"total": project.tickets.length
+				"total": project.tickets.length,
+				"open": 0,
+				"in progress": 0,
+				"resolved": 0
 			}
 
 			project.tickets.forEach((ticket) => {
 				let status = ticket.status.toLowerCase();
-				if(ticketStats[status] == null) {
-					ticketStats[status] = 1;
-				}
-				else {
-					ticketStats[status]++;
-				}
+				ticketStats[status]++;
 			});
 
 			let json = project.toJSON();
