@@ -35,7 +35,6 @@ let options = {
 			"application/json",
 		],
 		host: 'api-itm.herokuapp.com',
-		schemes: ['https'],
 		securityDefinitions: {
 			JWT: {
 				type: 'apiKey',
