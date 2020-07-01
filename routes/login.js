@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { body, validationResult } = require('express-validator');
+const { loginValidation, validate } = require('../validators');
 let jwt = require('jsonwebtoken');
 let crypto = require('crypto');
 
@@ -14,6 +14,7 @@ let crypto = require('crypto');
 /**
  * @typedef LoggedUserDTO
  * @property {string} username - Username of the user
+ * @property {boolean} admin - User is admin or not
  * @property {string} token - JWT token
  */
 
@@ -25,21 +26,10 @@ let crypto = require('crypto');
  * @consumes application/json
  * @produces application/json
  * @returns {LoggedUserDTO.model} 200 - User logged
+ * @returns {Errors.model} 422 - Validation errors
  * @returns {Error.model} 400 - Invalid credentials
  */
-router.post('/', [
-	body('username').not().isEmpty().withMessage('Username required'),
-	body('password').not().isEmpty().withMessage('Password required'),
-],
-async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array()
-		});
-	}
-
+router.post('/', loginValidation, validate, async (req, res, next) => {
 	let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 
 	let user = await sequelize.user.findOne({

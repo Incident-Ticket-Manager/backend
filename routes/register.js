@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { body, validationResult } = require('express-validator');
+const { registerValidation, validate } = require('../validators');
 let crypto = require('crypto');
 
 /**
@@ -13,7 +13,12 @@ let crypto = require('crypto');
 
 /**
  * @typedef Error
- * @property {string} error - Register error
+ * @property {string} error - Error message
+ */
+
+/**
+ * @typedef Errors
+ * @property {Array.<Error>} errors - List of errors
  */
 
 /**
@@ -24,23 +29,10 @@ let crypto = require('crypto');
  * @consumes application/json
  * @produces application/json
  * @returns 200 - User registered
+ * @returns {Errors.model} 422 - Validation errors
  * @returns {Error.model} 400 - Username is already used
  */
-router.post('/', [
-	body('username').not().isEmpty().withMessage('Username required'),
-	body('password').matches(/^(?=.*?[A-Z])(?=.*[a-z])(?=.*[\d])(?!.*\s).{8,}$/)
-		.withMessage('Valid password required'),
-	body('email').isEmail().withMessage('Valid email required')
-],
-async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
-
+router.post('/', registerValidation, validate, async (req, res, next) => {
 	try{
 		let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 		await sequelize.user.create({
