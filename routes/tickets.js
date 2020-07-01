@@ -128,7 +128,7 @@ async (req, res, next) => {
  * Assign a ticket to me
  * @route POST /tickets/assign
  * @group Tickets
- * @param {string} ticket.body.required
+ * @param {string} ticket.path.required
  * @consumes application/json
  * @produces application/json
  * @returns {TicketDTO.model} 200 - Ticket
@@ -136,20 +136,11 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.post('/assign', [
-	body('ticket').not().isEmpty(),
-], async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.post('/assign/:ticket', async (req, res, next) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
-			id: req.body.ticket
+			id: req.params.ticket
 		}
 	});
 
