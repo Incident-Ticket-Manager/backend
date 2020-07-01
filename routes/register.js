@@ -1,8 +1,8 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { registerValidation, validate } = require('../validators');
 let crypto = require('crypto');
+const { registerValidation, validate } = require('../validators/user');
 
 /**
  * @typedef RegisterDTO
@@ -29,8 +29,8 @@ let crypto = require('crypto');
  * @consumes application/json
  * @produces application/json
  * @returns 200 - User registered
- * @returns {Errors.model} 422 - Validation errors
  * @returns {Error.model} 400 - Username is already used
+ * @returns {Errors.model} 422 - Validation errors
  */
 router.post('/', registerValidation, validate, async (req, res) => {
 	try{

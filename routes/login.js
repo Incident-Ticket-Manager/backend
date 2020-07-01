@@ -1,9 +1,9 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { loginValidation, validate } = require('../validators');
 let jwt = require('jsonwebtoken');
 let crypto = require('crypto');
+const { loginValidation, validate } = require('../validators/user');
 
 /**
  * @typedef LoginDTO
@@ -26,8 +26,8 @@ let crypto = require('crypto');
  * @consumes application/json
  * @produces application/json
  * @returns {LoggedUserDTO.model} 200 - User logged
- * @returns {Errors.model} 422 - Validation errors
  * @returns {Error.model} 400 - Invalid credentials
+ * @returns {Errors.model} 422 - Validation errors
  */
 router.post('/', loginValidation, validate, async (req, res) => {
 	let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
