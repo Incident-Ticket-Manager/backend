@@ -178,16 +178,10 @@ async (req, res, next) => {
 });
 
 /**
- * @typedef UpdateProjectDTO
- * @property {string} name - Name of the project
- * @property {string} newName - New name of the project
- */
-
-/**
  * Update a project
- * @route PUT /projects
+ * @route PUT /projects/{projectName}
  * @group Projects
- * @param {UpdateProjectDTO.model} project.body.required
+ * @param {string} project.body.required
  * @consumes application/json
  * @produces application/json
  * @returns {ProjectDTO.model} 200 - Project
@@ -195,9 +189,8 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.put('/', [
+router.put('/:name', [
 	body('name').not().isEmpty(),
-	body('newName').not().isEmpty(),
 ],
 async (req, res, next) => {
 
@@ -210,7 +203,7 @@ async (req, res, next) => {
 
 	let project  = await sequelize.project.findOne({
 		where: {
-			name: req.body.name
+			name: req.params.name
 		}
 	});
 
@@ -219,16 +212,16 @@ async (req, res, next) => {
 		if(project.admin == req.user.username) {
 			try {
 				await sequelize.project.update({
-					name: req.body.newName
+					name: req.body.name
 				}, {
 					where: {
-						name: req.body.name
+						name: req.params.name
 					},
 				});
 
 				res.json(await sequelize.project.findOne({
 					where: {
-						name: req.body.newName
+						name: req.body.name
 					}
 				}));
 			}
