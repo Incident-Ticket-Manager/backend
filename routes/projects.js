@@ -1,7 +1,15 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { param, body, validationResult } = require('express-validator');
+const { 
+	projectDetailsValidation,
+	addProjectValidation,
+	updateProjectValidation,
+	deleteProjectValidation,
+	addUserProjectValidation,
+	deleteUserProjectValidation,
+	validate
+} = require('../validators/projects');
 
 /**
  * @typedef ProjectDTO
@@ -18,6 +26,7 @@ const { param, body, validationResult } = require('express-validator');
  * @produces application/json
  * @returns {Array.<ProjectDTO>} 200 - Projects
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
 router.get('/', async (req, res, next) => {
@@ -74,19 +83,12 @@ router.get('/', async (req, res, next) => {
  * @param {string} projectName.path.required
  * @produces application/json
  * @returns {ProjectFullDTO.model} 200 - Project
+ * @returns {Error.model} 400 - Project doesn't exists
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.get('/:project', [
-	param('project').not().isEmpty().withMessage('Project name required')
-], async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.get('/:project', projectDetailsValidation, validate, async (req, res, next) => {
 
 	let project = await sequelize.project.findOne({
 		where: {
@@ -133,19 +135,10 @@ router.get('/:project', [
  * @returns {ProjectDTO.model} 200 - Project
  * @returns {Error.model} 400 - Project name already used
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/', [
-	body('name').not().isEmpty().withMessage('Project name required')
-],
-async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.post('/', addProjectValidation, validate, async (req, res, next) => {
 
 	let user = await sequelize.user.findOne({
 		where: {
@@ -184,20 +177,10 @@ async (req, res, next) => {
  * @returns {ProjectDTO.model} 200 - Project
  * @returns {Error.model} 400 - Project doesn't exists, the name is already used or you are not the admin of the project
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.put('/:project', [
-	param('project').not().isEmpty().withMessage('Project name required'),
-	body('name').not().isEmpty().withMessage('New name required')
-],
-async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.put('/:project', updateProjectValidation, validate, async (req, res, next) => {
 
 	let project  = await sequelize.project.findOne({
 		where: {
@@ -254,18 +237,10 @@ async (req, res, next) => {
  * @returns 200 - Project deleted
  * @returns {Error.model} 400 - This project doesn't exists or you are not the admin of the project
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.delete('/:project', [
-	param('project').not().isEmpty().withMessage('Project name required')
-], async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.delete('/:project', deleteProjectValidation, validate, async (req, res, next) => {
 
 	let project  = await sequelize.project.findOne({
 		where: {
@@ -305,20 +280,10 @@ router.delete('/:project', [
  * @returns 200 - Project deleted
  * @returns {Error.model} 400 - This user, the project doesn't exists or you are not the admin of the project
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/users', [
-	body('user').not().isEmpty().withMessage('User username required'),
-	body('project').not().isEmpty().withMessage('Project name required')
-],
-async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.post('/users', addUserProjectValidation, validate, async (req, res, next) => {
 
 	let project = await sequelize.project.findOne({
 		where: {
@@ -365,19 +330,10 @@ async (req, res, next) => {
  * @returns 200 - Project deleted
  * @returns {Error.model} 400 - This user, the project doesn't exists, not admin, don't remove yourself
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.delete('/:project/users/:user', [
-	param('project').not().isEmpty().withMessage('Project name required'),
-	param('user').not().isEmpty().withMessage('User username required'),
-], async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.delete('/:project/users/:user', deleteUserProjectValidation, validate, async (req, res, next) => {
 
 	let project = await sequelize.project.findOne({
 		where: {
