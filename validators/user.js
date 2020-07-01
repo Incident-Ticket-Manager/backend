@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 let validate = require('./validator');
 
 const registerValidation = [
@@ -13,7 +13,7 @@ const loginValidation = [
 ];
 
 const deleteValidation = [
-	path('user', 'Username required').not().isEmpty(),
+	param('user', 'Username required').not().isEmpty(),
 ];
 
 module.exports = {
