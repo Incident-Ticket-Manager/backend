@@ -9,7 +9,7 @@ const {
 	addUserProjectValidation,
 	deleteUserProjectValidation,
 	validate
-} = require('../validators/projects');
+} = require('../validators/project');
 
 /**
  * @typedef ProjectDTO
