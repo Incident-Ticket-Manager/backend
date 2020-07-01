@@ -29,7 +29,7 @@ let crypto = require('crypto');
  * @returns {Errors.model} 422 - Validation errors
  * @returns {Error.model} 400 - Invalid credentials
  */
-router.post('/', loginValidation, validate, async (req, res, next) => {
+router.post('/', loginValidation, validate, async (req, res) => {
 	let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 
 	let user = await sequelize.user.findOne({

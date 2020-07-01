@@ -32,7 +32,7 @@ let crypto = require('crypto');
  * @returns {Errors.model} 422 - Validation errors
  * @returns {Error.model} 400 - Username is already used
  */
-router.post('/', registerValidation, validate, async (req, res, next) => {
+router.post('/', registerValidation, validate, async (req, res) => {
 	try{
 		let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 		await sequelize.user.create({
