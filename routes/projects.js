@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { body, validationResult } = require('express-validator');
+const { param, body, validationResult } = require('express-validator');
 
 /**
  * @typedef ProjectDTO
@@ -32,18 +32,17 @@ router.get('/', async (req, res, next) => {
 		}
 	});
 
-	if(user != null) {
-		let projects = [];
-		user.projects.forEach((e) => {
-			let project = e.toJSON();
-			project.isAdmin = project.admin == req.user.username;
-			projects.push(project);
-		})
-		res.json(projects);
+	if(user == null) {
+		return res.status(401).json();
 	}
-	else {
-		res.status(401).json();
-	}
+
+	let projects = [];
+	user.projects.forEach((e) => {
+		let project = e.toJSON();
+		project.isAdmin = project.admin == req.user.username;
+		projects.push(project);
+	})
+	res.json(projects);
 });
 
 /**
@@ -78,51 +77,50 @@ router.get('/', async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.get('/:project', async (req, res, next) => {
-	if(req.params.project != null) {
+router.get('/:project', [
+	param('project').not().isEmpty().withMessage('Project name required')
+], async (req, res, next) => {
 
-		let project = await sequelize.project.findOne({
-			where: {
-				name: req.params.project
-			},
-			include: {
-				model: sequelize.ticket,
-				include: sequelize.client
-			}
-		});
-
-		if(project != null) {
-
-			let ticketStats = {
-				"total": project.tickets.length,
-				"open": 0,
-				"in progress": 0,
-				"resolved": 0
-			}
-
-			project.tickets.forEach((ticket) => {
-				let status = ticket.status.toLowerCase();
-				ticketStats[status]++;
-			});
-
-			let json = project.toJSON();
-			json.isAdmin = project.admin == req.user.username;
-			json.ticketStats = ticketStats;
-
-			res.json(json);
-		}
-		else {
-			res.json({
-				error: 'This project doesn\'t exists'
-			})
-		}
-		
-	}
-	else {
-		res.json({
-			error: 'Project name required'
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array() 
 		});
 	}
+
+	let project = await sequelize.project.findOne({
+		where: {
+			name: req.params.project
+		},
+		include: {
+			model: sequelize.ticket,
+			include: sequelize.client
+		}
+	});
+
+	if(project == null) {
+		return res.json({
+			error: 'This project doesn\'t exists'
+		})
+	}
+
+	let ticketStats = {
+		"total": project.tickets.length,
+		"open": 0,
+		"in progress": 0,
+		"resolved": 0
+	}
+
+	project.tickets.forEach((ticket) => {
+		let status = ticket.status.toLowerCase();
+		ticketStats[status]++;
+	});
+
+	let json = project.toJSON();
+	json.isAdmin = project.admin == req.user.username;
+	json.ticketStats = ticketStats;
+
+	res.json(json);
 });
 
 /**
@@ -155,25 +153,23 @@ async (req, res, next) => {
 		}
 	});
 
-	if(user != null){
-		try{
-			let project = await sequelize.project.create({
-				name: req.body.name,
-				admin: user.username,
-			});
-
-			await user.addProject(project);
-
-			res.json(project);
-		}
-		catch(e){
-			res.status(400).json({
-				error: 'This project name is already used'
-			});
-		}
+	if(user == null){
+		return res.status(401).json();
 	}
-	else {
-		res.status(401).json();
+
+	try{
+		let project = await sequelize.project.create({
+			name: req.body.name,
+			admin: user.username,
+		});
+
+		await user.addProject(project);
+		res.json(project);
+	}
+	catch(e){
+		res.status(400).json({
+			error: 'This project name is already used'
+		});
 	}
 });
 
@@ -181,7 +177,8 @@ async (req, res, next) => {
  * Update a project
  * @route PUT /projects/{projectName}
  * @group Projects
- * @param {string} project.body.required
+ * @param {string} project.path.required
+ * @param {string} name.body.required
  * @consumes application/json
  * @produces application/json
  * @returns {ProjectDTO.model} 200 - Project
@@ -189,7 +186,7 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.put('/:name', [
+router.put('/:project', [
 	body('name').not().isEmpty(),
 ],
 async (req, res, next) => {
@@ -203,44 +200,40 @@ async (req, res, next) => {
 
 	let project  = await sequelize.project.findOne({
 		where: {
-			name: req.params.name
+			name: req.params.project
 		}
 	});
 
-	if(project != null) {
-
-		if(project.admin == req.user.username) {
-			try {
-				await sequelize.project.update({
-					name: req.body.name
-				}, {
-					where: {
-						name: req.params.name
-					},
-				});
-
-				res.json(await sequelize.project.findOne({
-					where: {
-						name: req.body.name
-					}
-				}));
-			}
-			catch(e){
-				console.log(e);
-				res.status(400).json({
-					error: 'This project name is already used'
-				});
-			}
-		}
-		else {
-			res.status(400).json({
-				error: 'You are not the admin of this project'
-			});
-		}
-	}
-	else{
-		res.status(400).json({
+	if(project == null) {
+		return res.status(400).json({
 			error: 'This project doesn\'t exists'
+		});
+	}
+
+	if(project.admin != req.user.username) {
+		res.status(400).json({
+			error: 'You are not the admin of this project'
+		});
+	}
+
+	try {
+		await sequelize.project.update({
+			name: req.body.name
+		}, {
+			where: {
+				name: req.params.project
+			},
+		});
+
+		res.json(await sequelize.project.findOne({
+			where: {
+				name: req.body.name
+			}
+		}));
+	}
+	catch(e){
+		res.status(400).json({
+			error: 'This project name is already used'
 		});
 	}
 });
@@ -262,44 +255,37 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.delete('/:project', async (req, res, next) => {
+router.delete('/:project', [
+	param('project').not().isEmpty().withMessage('Project name required')
+], async (req, res, next) => {
 
-	if(req.params.project == null) {
-		res.json({
-			error: 'Project name required'
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array() 
 		});
 	}
-	else {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			return res.status(400).json({
-				errors: errors.array() 
-			});
-		}
 
-		let project  = await sequelize.project.findOne({
-			where: {
-				name: req.params.project
-			}
+	let project  = await sequelize.project.findOne({
+		where: {
+			name: req.params.project
+		}
+	});
+
+	if(project == null) {
+		return res.status(400).json({
+			error: 'This project doesn\'t exists'
 		});
-
-		if(project != null) {
-			if(project.admin = req.user.username){
-				await project.destroy();
-				res.json();
-			}
-			else {
-				res.status(400).json({
-					error: 'You are not the admin of this project'
-				});
-			}
-		}
-		else {
-			res.status(400).json({
-				error: 'This project doesn\'t exists'
-			});
-		}
 	}
+
+	if(project.admin != req.user.username) {
+		return res.status(400).json({
+			error: 'You are not the admin of this project'
+		});
+	}
+
+	await project.destroy();
+	res.json();
 });
 
 /**
@@ -339,37 +325,32 @@ async (req, res, next) => {
 		}
 	});
 
-	if(project != null) {
-		if(project.admin == req.user.username) {
-			let user = await sequelize.user.findOne({
-				where: {
-					username: req.body.user,
-				}
-			});
-
-			if(user != null){
-
-				await user.addProject(project);
-
-				res.json();
-			}
-			else {
-				res.status(400).json({
-					error: 'This user doesn\'t exists'
-				});
-			}
-		}
-		else {
-			res.status(400).json({
-				error: 'You are not the admin of the project'
-			});
-		}
-	}
-	else {
-		res.status(400).json({
+	if(project == null) {
+		return res.status(400).json({
 			error: 'This project doesn\'t exists'
 		});
 	}
+
+	if(project.admin != req.user.username) {
+		return res.status(400).json({
+			error: 'You are not the admin of the project'
+		});
+	}
+
+	let user = await sequelize.user.findOne({
+		where: {
+			username: req.body.user,
+		}
+	});
+
+	if(user == null){
+		return res.status(400).json({
+			error: 'This user doesn\'t exists'
+		});
+	}
+
+	await user.addProject(project);
+	res.json();
 });
 
 /**
@@ -385,66 +366,56 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.delete('/:project/users/:user', async (req, res, next) => {
+router.delete('/:project/users/:user', [
+	param('project').not().isEmpty().withMessage('Project name required'),
+	param('user').not().isEmpty().withMessage('User username required'),
+], async (req, res, next) => {
 
-	if(res.params.project == null || res.params.user == null) {
-		res.json({
-			error: 'Missing project name and user name required'
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(400).json({
+			errors: errors.array() 
 		});
 	}
-	else {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			return res.status(400).json({
-				errors: errors.array() 
-			});
-		}
 
-		let project = await sequelize.project.findOne({
-			where: {
-				name: req.params.project,
-			}
+	let project = await sequelize.project.findOne({
+		where: {
+			name: req.params.project,
+		}
+	});
+
+	if(project == null) {
+		return res.status(400).json({
+			error: 'This project doesn\'t exists'
 		});
-
-		if(project != null) {
-			if(project.admin == req.user.username) {
-				if(project.admin == req.params.user){
-					res.status(400).json({
-						error: 'You can\'t remove yourself'
-					});
-				}
-				else {
-					let user = await sequelize.user.findOne({
-						where: {
-							username: req.params.user,
-						}
-					});
-
-					if(user != null){
-
-						await user.removeProject(project);
-
-						res.json();
-					}
-					else {
-						res.status(400).json({
-							error: 'This user doesn\'t exists'
-						});
-					}
-				}
-			}
-			else {
-				res.status(400).json({
-					error: 'You are not the admin of the project'
-				});
-			}
-		}
-		else {
-			res.status(400).json({
-				error: 'This project doesn\'t exists'
-			});
-		}
 	}
+
+	if(project.admin != req.user.username) {
+		return res.status(400).json({
+			error: 'You are not the admin of the project'
+		});
+	}
+
+	if(project.admin == req.params.user){
+		return res.status(400).json({
+			error: 'You can\'t remove yourself'
+		});
+	}
+
+	let user = await sequelize.user.findOne({
+		where: {
+			username: req.params.user,
+		}
+	});
+
+	if(user == null){
+		return res.status(400).json({
+			error: 'This user doesn\'t exists'
+		});
+	}
+
+	await user.removeProject(project);
+	res.json();
 });
 
 module.exports = router;
