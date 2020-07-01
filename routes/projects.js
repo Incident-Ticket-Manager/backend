@@ -136,7 +136,7 @@ router.get('/:project', [
  * @security JWT
  */
 router.post('/', [
-	body('name').not().isEmpty()
+	body('name').not().isEmpty().withMessage('Project name required')
 ],
 async (req, res, next) => {
 
@@ -187,7 +187,8 @@ async (req, res, next) => {
  * @security JWT
  */
 router.put('/:project', [
-	body('name').not().isEmpty(),
+	param('project').not().isEmpty().withMessage('Project name required'),
+	body('name').not().isEmpty().withMessage('New name required')
 ],
 async (req, res, next) => {
 
@@ -307,8 +308,8 @@ router.delete('/:project', [
  * @security JWT
  */
 router.post('/users', [
-	body('user').not().isEmpty(),
-	body('project').not().isEmpty()
+	body('user').not().isEmpty().withMessage('User username required'),
+	body('project').not().isEmpty().withMessage('Project name required')
 ],
 async (req, res, next) => {
 
