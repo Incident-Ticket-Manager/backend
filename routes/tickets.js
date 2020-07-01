@@ -1,7 +1,13 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { body, validationResult } = require('express-validator');
+const { 
+	addTicketValidation, 
+	assignTicketValidation,
+	assignToTicketValidation,
+	resolveTicketValidation,
+	validate, 
+} = require('../validators/client');
 
 /**
  * @typedef TicketDTO
@@ -38,12 +44,11 @@ router.get('/', async (req, res, next) => {
 		]
 	});
 
-	if(user != null) {
-		res.json(user.tickets);
+	if(user == null) {
+		return res.status(401).json();
 	}
-	else {
-		res.status(401).json();
-	}
+
+	res.json(user.tickets);
 });
 
 /**
@@ -64,25 +69,10 @@ router.get('/', async (req, res, next) => {
  * @returns {TicketDTO.model} 200 - Ticket
  * @returns {Error.model} 400 - Project or client doesn't exists
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/', [
-	//project
-	body('project').not().isEmpty(),
-	//client
-	body('client').not().isEmpty(),
-	//ticket
-	body('title').not().isEmpty(),
-	body('content').not().isEmpty(),
-],
-async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.post('/', addTicketValidation, validate, async (req, res, next) => {
 
 	let project = await sequelize.project.findOne({
 		where: {
@@ -90,38 +80,36 @@ async (req, res, next) => {
 		}
 	});
 
-	if(project != null){
-		let client = await sequelize.client.findOne({
-			where: {
-				id: req.body.client
-			}
-		});
-
-		if(client != null) {
-			let ticket = await sequelize.ticket.create({
-				title: req.body.title,
-				content: req.body.content,
-				clientId: client.id
-			});
-
-			await project.addTicket(ticket);
-
-			let json = ticket.toJSON();
-			json.client = client.toJSON();
-
-			res.json(json);
-		}
-		else {
-			res.status(400).json({
-				error: 'This client doesn\'t exists'
-			});
-		}
-	}
-	else {
-		res.status(400).json({
+	if(project == null){
+		return res.status(400).json({
 			error: 'This project doesn\'t exists'
 		});
 	}
+
+	let client = await sequelize.client.findOne({
+		where: {
+			id: req.body.client
+		}
+	});
+
+	if(client == null) {
+		return res.status(400).json({
+			error: 'This client doesn\'t exists'
+		});
+	}
+
+	let ticket = await sequelize.ticket.create({
+		title: req.body.title,
+		content: req.body.content,
+		clientId: client.id
+	});
+
+	await project.addTicket(ticket);
+
+	let json = ticket.toJSON();
+	json.client = client.toJSON();
+
+	res.json(json);
 });
 
 /**
@@ -134,35 +122,34 @@ async (req, res, next) => {
  * @returns {TicketDTO.model} 200 - Ticket
  * @returns {Error.model} 400 - Ticket doesn't exists or ticket is already assigned
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/assign/:ticket', async (req, res, next) => {
+router.post('/assign', assignTicketValidation, validate,  async (req, res, next) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
-			id: req.params.ticket
+			id: req.body.ticket
 		}
 	});
 
-	if(ticket != null) {
-		if(ticket.userName == null) {
-			ticket.userName = req.user.username;
-			ticket.status = 'In progress';
-			ticket = await ticket.save();
-
-			res.json(ticket);
-		}
-		else {
-			res.status(400).json({
-				error: 'This ticket is already assigned'
-			});
-		}
-	}
-	else {
-		res.status(400).json({
+	if(ticket == null) {
+		return res.status(400).json({
 			error: 'This ticket doesn\'t exists'
 		});
 	}
+
+	if(ticket.userName != null) {
+		return res.status(400).json({
+			error: 'This ticket is already assigned'
+		});
+	}
+
+	ticket.userName = req.user.username;
+	ticket.status = 'In progress';
+	ticket = await ticket.save();
+
+	res.json(ticket);
 });
 
 /**
@@ -181,19 +168,10 @@ router.post('/assign/:ticket', async (req, res, next) => {
  * @returns {TicketDTO.model} 200 - Ticket
  * @returns {Error.model} 400 - Ticket or user doesn't exists
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/assignto', [
-	body('ticket').not().isEmpty(),
-	body('user').not().isEmpty(),
-], async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.post('/assignto', assignToTicketValidation, validate, async (req, res, next) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
@@ -201,38 +179,30 @@ router.post('/assignto', [
 		}
 	});
 
-	if(ticket != null) {
-		let user = await sequelize.user.findOne({
-			where: {
-				username: req.body.user
-			}
-		});
-
-		if(user != null) {
-			ticket.userName = req.body.user;
-			ticket.status = 'In progress';
-			ticket = await ticket.save();
-
-			res.json(ticket);
-		}
-		else {
-			res.status(400).json({
-				error: 'This user doesn\'t exists'
-			});
-		}
-	}
-	else {
-		res.status(400).json({
+	if(ticket == null) {
+		return res.status(400).json({
 			error: 'This ticket doesn\'t exists'
 		});
 	}
-});
 
-/**
- * @typedef UpdateTicketDTO
- * @property {string} ticket - Id of the ticket
- * @property {enum} status - Status of the ticket - eg: Open, In progress, Resolved
- */
+	let user = await sequelize.user.findOne({
+		where: {
+			username: req.body.user
+		}
+	});
+
+	if(user == null) {
+		return res.status(400).json({
+			error: 'This user doesn\'t exists'
+		});
+	}
+
+	ticket.userName = req.body.user;
+	ticket.status = 'In progress';
+	ticket = await ticket.save();
+
+	res.json(ticket);
+});
 
 /**
  * Resolve ticket
@@ -244,18 +214,10 @@ router.post('/assignto', [
  * @returns {TicketDTO.model} 200 - Ticket
  * @returns {Error.model} 400 - Ticket doesn't exists
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/resolve', [
-	body('ticket').not().isEmpty(),
-], async (req, res, next) => {
-
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
+router.post('/resolve', resolveTicketValidation, validate, async (req, res, next) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
@@ -263,17 +225,16 @@ router.post('/resolve', [
 		}
 	});
 
-	if(ticket != null) {
-		ticket.status = 'Resolved';
-		ticket = await ticket.save();
-		
-		res.json(ticket);
-	}
-	else {
-		res.status(400).json({
+	if(ticket == null) {
+		return res.status(400).json({
 			error: 'This ticket doesn\'t exists'
 		});
 	}
+
+	ticket.status = 'Resolved';
+	ticket = await ticket.save();
+
+	res.json(ticket);
 });
 
 module.exports = router;
