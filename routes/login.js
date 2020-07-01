@@ -28,8 +28,8 @@ let crypto = require('crypto');
  * @returns {Error.model} 400 - Invalid credentials
  */
 router.post('/', [
-	body('username').not().isEmpty(),
-	body('password').not().isEmpty(),
+	body('username').not().isEmpty().withMessage('Username required'),
+	body('password').not().isEmpty().withMessage('Password required'),
 ],
 async (req, res, next) => {
 
@@ -49,23 +49,22 @@ async (req, res, next) => {
 		}
 	});
 
-	if(user != null){
-		let token = jwt.sign({
-			username: user.username,
-			admin: user.admin
-		}, process.env.SECRET);
-
-		res.json({
-			username: user.username,
-			admin: user.admin,
-			token: token
-		});
-	}
-	else {
-		res.status(400).json({
+	if(user == null){
+		return res.status(400).json({
 			error: "Invalid credentials"
 		});
 	}
+
+	let token = jwt.sign({
+		username: user.username,
+		admin: user.admin
+	}, process.env.SECRET);
+
+	res.json({
+		username: user.username,
+		admin: user.admin,
+		token: token
+	});
 });
 
 module.exports = router;
