@@ -29,7 +29,7 @@ const {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
 
 	let user = await sequelize.user.findOne({
 		where: {
@@ -88,7 +88,7 @@ router.get('/', async (req, res, next) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.get('/:project', projectDetailsValidation, validate, async (req, res, next) => {
+router.get('/:project', projectDetailsValidation, validate, async (req, res) => {
 
 	let project = await sequelize.project.findOne({
 		where: {
@@ -138,7 +138,7 @@ router.get('/:project', projectDetailsValidation, validate, async (req, res, nex
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/', addProjectValidation, validate, async (req, res, next) => {
+router.post('/', addProjectValidation, validate, async (req, res) => {
 
 	let user = await sequelize.user.findOne({
 		where: {
@@ -180,7 +180,7 @@ router.post('/', addProjectValidation, validate, async (req, res, next) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.put('/:project', updateProjectValidation, validate, async (req, res, next) => {
+router.put('/:project', updateProjectValidation, validate, async (req, res) => {
 
 	let project  = await sequelize.project.findOne({
 		where: {
@@ -240,7 +240,7 @@ router.put('/:project', updateProjectValidation, validate, async (req, res, next
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.delete('/:project', deleteProjectValidation, validate, async (req, res, next) => {
+router.delete('/:project', deleteProjectValidation, validate, async (req, res) => {
 
 	let project  = await sequelize.project.findOne({
 		where: {
@@ -283,7 +283,7 @@ router.delete('/:project', deleteProjectValidation, validate, async (req, res, n
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/users', addUserProjectValidation, validate, async (req, res, next) => {
+router.post('/users', addUserProjectValidation, validate, async (req, res) => {
 
 	let project = await sequelize.project.findOne({
 		where: {
@@ -333,7 +333,7 @@ router.post('/users', addUserProjectValidation, validate, async (req, res, next)
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.delete('/:project/users/:user', deleteUserProjectValidation, validate, async (req, res, next) => {
+router.delete('/:project/users/:user', deleteUserProjectValidation, validate, async (req, res) => {
 
 	let project = await sequelize.project.findOne({
 		where: {

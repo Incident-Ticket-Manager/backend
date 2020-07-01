@@ -30,7 +30,7 @@ const {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
 
 	let user = await sequelize.user.findOne({
 		where: {
@@ -72,7 +72,7 @@ router.get('/', async (req, res, next) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/', addTicketValidation, validate, async (req, res, next) => {
+router.post('/', addTicketValidation, validate, async (req, res) => {
 
 	let project = await sequelize.project.findOne({
 		where: {
@@ -125,7 +125,7 @@ router.post('/', addTicketValidation, validate, async (req, res, next) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/assign/:ticket', assignTicketValidation, validate,  async (req, res, next) => {
+router.post('/assign/:ticket', assignTicketValidation, validate,  async (req, res) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
@@ -171,7 +171,7 @@ router.post('/assign/:ticket', assignTicketValidation, validate,  async (req, re
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/assign', assignToTicketValidation, validate, async (req, res, next) => {
+router.post('/assign', assignToTicketValidation, validate, async (req, res) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
@@ -217,7 +217,7 @@ router.post('/assign', assignToTicketValidation, validate, async (req, res, next
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/:ticket/resolve', resolveTicketValidation, validate, async (req, res, next) => {
+router.post('/:ticket/resolve', resolveTicketValidation, validate, async (req, res) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
