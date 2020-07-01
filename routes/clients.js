@@ -81,7 +81,6 @@ async (req, res, next) => {
 
 /**
  * @typedef UpdateClientDTO
- * @property {string} id - Id of the client
  * @property {string} name - Name of the client
  * @property {string} email - Email name of the client
  * @property {string} phone - Phone name of the client
@@ -90,7 +89,7 @@ async (req, res, next) => {
 
 /**
  * Update a client
- * @route PUT /clients
+ * @route PUT /clients/{clientId}
  * @group Clients
  * @param {UpdateClientDTO.model} client.body.required
  * @consumes application/json
@@ -100,8 +99,7 @@ async (req, res, next) => {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.put('/', [
-	body('id').not().isEmpty(),
+router.put('/:client', [
 	body('name').not().isEmpty(),
 	body('email').isEmail(),
 	body('phone').isMobilePhone(),
@@ -124,13 +122,13 @@ async (req, res, next) => {
 			address: req.body.address,
 		}, {
 			where: {
-				id: req.body.id
+				id: req.params.client
 			}
 		});
 
 		res.json(await sequelize.client.findOne({
 			where: {
-				id: req.body.id
+				id: req.params.client
 			}
 		}));
 	}
@@ -140,11 +138,6 @@ async (req, res, next) => {
 		})
 	}
 });
-
-/**
- * @typedef DeleteClientDTO
- * @property {string} id - Id of the project
- */
 
 /**
  * Delete a client
