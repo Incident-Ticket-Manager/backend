@@ -35,7 +35,7 @@ const {
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.get('/', async (req, res, next) => {
+router.get('/', async (req, res) => {
 	let clients = await sequelize.client.findAll();
 	res.json(clients);
 });
@@ -53,7 +53,7 @@ router.get('/', async (req, res, next) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/', addClientValidation, validate, async (req, res, next) => {
+router.post('/', addClientValidation, validate, async (req, res) => {
 
 	if(!req.user.admin) {
 		return res.status(400).json({
@@ -92,7 +92,7 @@ router.post('/', addClientValidation, validate, async (req, res, next) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.put('/:client', updateClientValidation, validate, async (req, res, next) => {
+router.put('/:client', updateClientValidation, validate, async (req, res) => {
 
 	if(!req.user.admin) {
 		return res.status(400).json({
@@ -131,7 +131,7 @@ router.put('/:client', updateClientValidation, validate, async (req, res, next) 
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.delete('/:client', deleteClientValidation, validate,  async (req, res, next) => {
+router.delete('/:client', deleteClientValidation, validate,  async (req, res) => {
 
 	if(!req.user.admin) {
 		return res.status(400).json({

@@ -12,13 +12,19 @@ const loginValidation = [
 	body('password', 'Password required').not().isEmpty()
 ];
 
-const deleteValidation = [
+const updateUserValidation = [
+	body('username', 'Username required').not().isEmpty(),
+	body('email', 'Valid email required').isEmail()
+];
+
+const deleteUserValidation = [
 	param('user', 'Username required').not().isEmpty(),
 ];
 
 module.exports = {
 	registerValidation,
 	loginValidation,
-	deleteValidation,
+	updateUserValidation,
+	deleteUserValidation,
 	validate
 };
