@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { body, validationResult } = require('express-validator');
+const { deleteValidation, validate } = require('../validators/user');
 
 /**
  * Delete user
@@ -14,29 +14,28 @@ const { body, validationResult } = require('express-validator');
  * @returns 401 - User not authentified
  * @security JWT
  */
-router.delete('/:user', async (req, res, next) =>{
-	if(req.user.admin) {
-		let user = await sequelize.user.findOne({
-			where: {
-				username: req.params.user
-			}
-		});
+router.delete('/:user', deleteValidation, validate, async (req, res, next) =>{
 
-		if(user != null) {
-			await user.destroy();
-			res.json();
+	let user = await sequelize.user.findOne({
+		where: {
+			username: req.params.user
 		}
-		else {
-			res.json({
-				error: 'This user doesn\'t exists'
-			});
-		}
-	}
-	else {
-		res.json({
+	});
+
+	if(!req.user.admin) {
+		return res.json({
 			error: 'You are not an admin'
 		});
 	}
+
+	if(user == null) {
+		return res.json({
+			error: 'This user doesn\'t exists'
+		});
+	}
+
+	await user.destroy();
+	res.json();
 });
 
 module.exports = router;
