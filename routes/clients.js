@@ -1,7 +1,12 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
-const { body, validationResult } = require('express-validator');
+const { 
+	addClientValidation, 
+	updateClientValidation,
+	deleteClientValidation,
+	validate, 
+} = require('../validators/client');
 
 /**
  * @typedef CClientDTO
@@ -45,38 +50,25 @@ router.get('/', async (req, res, next) => {
  * @returns {ClientDTO.model} 200 - Client
  * @returns {Error.model} 400 - You are not an admin
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/', [
-	body('name').not().isEmpty(),
-	body('email').isEmail(),
-	body('phone').isMobilePhone(),
-	body('address').not().isEmpty(),
-],
-async (req, res, next) => {
+router.post('/', addClientValidation, validate, async (req, res, next) => {
 
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
+	if(!req.user.admin) {
 		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
-
-	if(req.user.admin) {
-		let client = await sequelize.client.create({
-			name: req.body.name,
-			email: req.body.email,
-			phone: req.body.phone,
-			address: req.body.address,
-		});
-
-		res.json(client);
-	}
-	else {
-		res.status(400).json({
 			error: 'You are not an admin'
 		})
 	}
+
+	let client = await sequelize.client.create({
+		name: req.body.name,
+		email: req.body.email,
+		phone: req.body.phone,
+		address: req.body.address,
+	});
+
+	res.json(client);
 });
 
 /**
@@ -97,46 +89,33 @@ async (req, res, next) => {
  * @returns {ClientDTO.model} 200 - Client
  * @returns {Error.model} 400 - Client doesn't exists
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.put('/:client', [
-	body('name').not().isEmpty(),
-	body('email').isEmail(),
-	body('phone').isMobilePhone(),
-	body('address').not().isEmpty(),
-],
-async (req, res, next) => {
+router.put('/:client', updateClientValidation, validate, async (req, res, next) => {
 
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
+	if(!req.user.admin) {
 		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
-
-	if(req.user.admin) {
-		await sequelize.client.update({
-			name: req.body.name,
-			email: req.body.email,
-			phone: req.body.phone,
-			address: req.body.address,
-		}, {
-			where: {
-				id: req.params.client
-			}
-		});
-
-		res.json(await sequelize.client.findOne({
-			where: {
-				id: req.params.client
-			}
-		}));
-	}
-	else {
-		res.status(400).json({
 			error: 'You are not an admin'
-		})
+		});
 	}
+
+	await sequelize.client.update({
+		name: req.body.name,
+		email: req.body.email,
+		phone: req.body.phone,
+		address: req.body.address,
+	}, {
+		where: {
+			id: req.params.client
+		}
+	});
+
+	res.json(await sequelize.client.findOne({
+		where: {
+			id: req.params.client
+		}
+	}));
 });
 
 /**
@@ -149,38 +128,31 @@ async (req, res, next) => {
  * @returns 200 - Project deleted
  * @returns {Error.model} 400 - This client doesn't exists or you are not an admin
  * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.delete('/:client', async (req, res, next) => {
+router.delete('/:client', deleteClientValidation, validate,  async (req, res, next) => {
 
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
+	if(!req.user.admin) {
 		return res.status(400).json({
-			errors: errors.array() 
-		});
-	}
-
-	if(req.user.admin) {
-		let client = await sequelize.client.findOne({
-			where: {
-				id: req.params.client
-			}
-		});
-
-		if(client != null){
-			await client.destroy();
-		}
-		else {
-			res.status(400).json({
-				error: 'This client doesn\'t exists'
-			})
-		}
-	}
-	else {
-		res.status(400).json({
 			error: 'You are not an admin'
 		})
 	}
+
+	let client = await sequelize.client.findOne({
+		where: {
+			id: req.params.client
+		}
+	});
+
+	if(client == null){
+		return res.status(400).json({
+			error: 'This client doesn\'t exists'
+		});
+	}
+
+	await client.destroy();
+	res.json();
 });
 
 module.exports = router;
