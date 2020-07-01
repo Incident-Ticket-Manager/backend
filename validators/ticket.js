@@ -9,7 +9,7 @@ const addTicketValidation = [
 ];
 
 const assignTicketValidation = [
-	body('ticket', 'Ticket id required').not().isEmpty(),
+	param('ticket', 'Ticket id required').not().isEmpty(),
 ];
 
 const assignToTicketValidation = [
@@ -18,12 +18,13 @@ const assignToTicketValidation = [
 ];
 
 const resolveTicketValidation = [
-	body('ticket', 'Ticket id required').not().isEmpty(),
+	param('ticket', 'Ticket id required').not().isEmpty(),
 ];
 
 module.exports = {
 	addTicketValidation,
-	updateTicketValidation,
-	deleteTicketValidation,
+	assignTicketValidation,
+	assignToTicketValidation,
+	resolveTicketValidation,
 	validate
 };

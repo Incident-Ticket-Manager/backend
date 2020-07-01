@@ -7,7 +7,7 @@ const {
 	assignToTicketValidation,
 	resolveTicketValidation,
 	validate, 
-} = require('../validators/client');
+} = require('../validators/ticket');
 
 /**
  * @typedef TicketDTO
@@ -113,8 +113,8 @@ router.post('/', addTicketValidation, validate, async (req, res, next) => {
 });
 
 /**
- * Assign a ticket to me
- * @route POST /tickets/assign
+ * Assign a ticket to the current user
+ * @route POST /tickets/assign/{ticketId}
  * @group Tickets
  * @param {string} ticket.path.required
  * @consumes application/json
@@ -125,11 +125,11 @@ router.post('/', addTicketValidation, validate, async (req, res, next) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/assign', assignTicketValidation, validate,  async (req, res, next) => {
+router.post('/assign/:ticket', assignTicketValidation, validate,  async (req, res, next) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
-			id: req.body.ticket
+			id: req.params.ticket
 		}
 	});
 
@@ -160,7 +160,7 @@ router.post('/assign', assignTicketValidation, validate,  async (req, res, next)
 
 /**
  * Assign a ticket to a user
- * @route POST /tickets/assignto
+ * @route POST /tickets/assign
  * @group Tickets
  * @param {AssignTicketDTO.model} assign.body.required
  * @consumes application/json
@@ -171,7 +171,7 @@ router.post('/assign', assignTicketValidation, validate,  async (req, res, next)
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/assignto', assignToTicketValidation, validate, async (req, res, next) => {
+router.post('/assign', assignToTicketValidation, validate, async (req, res, next) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
@@ -206,9 +206,9 @@ router.post('/assignto', assignToTicketValidation, validate, async (req, res, ne
 
 /**
  * Resolve ticket
- * @route POST /tickets/resolve
+ * @route POST /tickets/{ticketId}/resolve
  * @group Tickets
- * @param {string} ticket.body.required
+ * @param {string} ticket.path.required
  * @consumes application/json
  * @produces application/json
  * @returns {TicketDTO.model} 200 - Ticket
@@ -217,11 +217,11 @@ router.post('/assignto', assignToTicketValidation, validate, async (req, res, ne
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/resolve', resolveTicketValidation, validate, async (req, res, next) => {
+router.post('/:ticket/resolve', resolveTicketValidation, validate, async (req, res, next) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
-			id: req.body.ticket
+			id: req.params.ticket
 		}
 	});
 
