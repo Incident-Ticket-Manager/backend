@@ -27,9 +27,10 @@ let crypto = require('crypto');
  * @returns {Error.model} 400 - Username is already used
  */
 router.post('/', [
-	body('username').not().isEmpty(),
-	body('password').matches(/^(?=.*?[A-Z])(?=.*[a-z])(?=.*[\d])(?!.*\s).{8,}$/),
-	body('email').isEmail()
+	body('username').not().isEmpty().withMessage('Username required'),
+	body('password').matches(/^(?=.*?[A-Z])(?=.*[a-z])(?=.*[\d])(?!.*\s).{8,}$/)
+		.withMessage('Valid password required'),
+	body('email').isEmail().withMessage('Valid email required')
 ],
 async (req, res, next) => {
 
