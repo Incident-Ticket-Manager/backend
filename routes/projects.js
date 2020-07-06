@@ -128,8 +128,6 @@ router.get('/:project', projectDetailsValidation, validate, async (req, res) => 
 /**
  * @typedef AddProjectDTO
  * @property {string} name - Name of the project
- * @property {string} admin - Admin name of the project
- * @property {string} date - Creation date of the project
  */
 
 /**
