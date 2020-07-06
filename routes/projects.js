@@ -134,14 +134,17 @@ router.get('/:project', projectDetailsValidation, validate, async (req, res) => 
 			[Sequelize.fn('date_trunc', 'month', Sequelize.col('date')), 'dateMonth'],
 			[Sequelize.fn('count', Sequelize.col('id')), 'count']
 		],
-		group: '"dateMonth"'
+		group: '"dateMonth"',
+		where: {
+			projectName: project.name
+		}
 	});
 
 	let monthStats = {};
 
 	tickets.forEach((ticket) => {
-		let date = new Date(Date.parse(ticket.dataValues.dateMonth));
-		monthStats[date.getMonth()] = ticket.dataValues.count
+		let date = Date.parse(ticket.dataValues.dateMonth);
+		monthStats[date] = ticket.dataValues.count;
 	});
 
 	let json = project.toJSON();
