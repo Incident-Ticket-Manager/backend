@@ -123,7 +123,7 @@ router.post('/', addTicketValidation, validate, async (req, res) => {
 
 /**
  * Update a ticket
- * @route PUT /tickets/{ticketId}
+ * @route PUT /tickets/{ticket}
  * @group Tickets
  * @param {string} ticket.path.required
  * @param {UpdateTicketDTO.model} ticket.body.required
@@ -185,7 +185,7 @@ router.put('/:ticket', updateTicketValidation, validate, async (req, res) => {
 
 /**
  * Delete a ticket
- * @route DELETE /tickets/{ticketId}
+ * @route DELETE /tickets/{ticket}
  * @group Tickets
  * @param {string} ticket.path.required
  * @consumes application/json
@@ -216,7 +216,7 @@ router.delete('/:ticket', deleteTicketValidation, validate, async (req, res) => 
 
 /**
  * Assign a ticket to the current user
- * @route POST /tickets/assign/{ticketId}
+ * @route POST /tickets/assign/{ticket}
  * @group Tickets
  * @param {string} ticket.path.required
  * @consumes application/json
@@ -308,7 +308,7 @@ router.post('/assign', assignToTicketValidation, validate, async (req, res) => {
 
 /**
  * Resolve ticket
- * @route POST /tickets/{ticketId}/resolve
+ * @route POST /tickets/{ticket}/resolve
  * @group Tickets
  * @param {string} ticket.path.required
  * @consumes application/json
