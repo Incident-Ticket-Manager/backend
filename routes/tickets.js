@@ -4,6 +4,7 @@ let sequelize = require('../db');
 const { 
 	addTicketValidation, 
 	updateTicketValidation,
+	deleteTicketValidation,
 	assignTicketValidation,
 	assignToTicketValidation,
 	resolveTicketValidation,
@@ -180,6 +181,37 @@ router.put('/:ticket', updateTicketValidation, validate, async (req, res) => {
 	json.client = client.toJSON();
 
 	res.json(json);
+});
+
+/**
+ * Delete a ticket
+ * @route DELETE /tickets/{ticketId}
+ * @group Tickets
+ * @param {string} ticket.path.required
+ * @consumes application/json
+ * @produces application/json
+ * @returns 200 - Ticket deleted
+ * @returns {Error.model} 400 - Ticket doesn't exists
+ * @returns 401 - User not authentified
+ * @returns {Errors.model} 422 - Validation errors
+ * @security JWT
+ */
+router.post('/:ticket', deleteTicketValidation, validate, async (req, res) => {
+
+	let ticket = await sequelize.ticket.findOne({
+		where: {
+			id: req.params.ticket
+		}
+	});
+
+	if(ticket == null) {
+		return res.status(400).json({
+			error: 'This ticket doesn\'t exists'
+		});
+	}
+
+	await ticket.destroy();
+	res.json();
 });
 
 /**

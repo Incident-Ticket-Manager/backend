@@ -15,6 +15,10 @@ const updateTicketValidation = [
 	body('content', 'Content required').not().isEmpty(),
 ];
 
+const deleteTicketValidation = [
+	param('ticket', 'Ticket id required').not().isEmpty(),
+];
+
 const assignTicketValidation = [
 	param('ticket', 'Ticket id required').not().isEmpty(),
 ];
@@ -31,6 +35,7 @@ const resolveTicketValidation = [
 module.exports = {
 	addTicketValidation,
 	updateTicketValidation,
+	deleteTicketValidation,
 	assignTicketValidation,
 	assignToTicketValidation,
 	resolveTicketValidation,
