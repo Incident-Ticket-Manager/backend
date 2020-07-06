@@ -16,7 +16,7 @@ let projectsRouter = require('./routes/projects');
 let ticketsRouter = require('./routes/tickets');
 let clientsRouter = require('./routes/clients');
 
-let jwt = require('express-jwt'); 
+let expressJwt = require('express-jwt'); 
 
 let app = express();
 let expressSwagger = require('express-swagger-generator')(app);
@@ -76,9 +76,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-app.use(jwt({
-	secret: process.env.SECRET,
-	algorithms: ['RS256']
+app.use(expressJwt({
+	secret: process.env.SECRET
 }).unless({
 	path: [
 		'/',
