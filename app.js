@@ -23,6 +23,8 @@ let expressSwagger = require('express-swagger-generator')(app);
 
 const { sequelize } = require('./db.js');
 
+let isDev = process.env.DEV != undefined;
+
 // Swagger engine setup
 let options = {
 	swaggerDefinition: {
@@ -34,7 +36,7 @@ let options = {
 		produces: [
 			"application/json",
 		],
-		host: 'api-itm.herokuapp.com',
+		host: isDev ? 'localhost:3000' : 'api-itm.herokuapp.com',
 		securityDefinitions: {
 			JWT: {
 				type: 'apiKey',
@@ -77,7 +79,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(expressJwt({
-	secret: process.env.SECRET
+	secret: process.env.SECRET,
+	algorithms: ['HS256']
 }).unless({
 	path: [
 		'/',
