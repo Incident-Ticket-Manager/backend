@@ -14,6 +14,7 @@ const loginValidation = [
 
 const updateUserValidation = [
 	body('username', 'Username required').not().isEmpty(),
+	body('password', 'Password required').not().isEmpty(),
 	body('email', 'Valid email required').isEmail()
 ];
 
