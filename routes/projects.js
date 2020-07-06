@@ -1,5 +1,6 @@
 let express = require('express');
 let router = express.Router();
+let Sequelize = require('sequelize');
 let sequelize = require('../db');
 const { 
 	projectDetailsValidation,
@@ -45,6 +46,13 @@ router.get('/', async (req, res) => {
 		return res.status(401).json();
 	}
 
+	/*let test = await sequelize.ticket.findAndCountAll({
+		attributes: [
+			[Sequelize.fn('date_trunc', 'month', Sequelize.col('date')), 'format']
+		],
+		group: 'format'
+	});*/
+
 	let projects = [];
 	user.projects.forEach((e) => {
 		let project = e.toJSON();
@@ -74,11 +82,14 @@ router.get('/', async (req, res) => {
  * @property {boolean} isAdmin - If the current user is the admin
  * @property {Array.<TicketDTO>} tickets - Tickets of the project
  * @property {object} stats - Tickets stats
+ * @property {object} monthStats - Tickets stats per month
  */
+
+
 
 /**
  * Get one project with his name
- * @route GET /projects/{projectName}
+ * @route GET /projects/{project}
  * @group Projects
  * @param {string} project.path.required
  * @produces application/json
@@ -118,9 +129,25 @@ router.get('/:project', projectDetailsValidation, validate, async (req, res) => 
 		ticketStats[status]++;
 	});
 
+	let tickets = await sequelize.ticket.findAll({
+		attributes: [
+			[Sequelize.fn('date_trunc', 'month', Sequelize.col('date')), 'dateMonth'],
+			[Sequelize.fn('count', Sequelize.col('id')), 'count']
+		],
+		group: '"dateMonth"'
+	});
+
+	let monthStats = {};
+
+	tickets.forEach((ticket) => {
+		let date = new Date(Date.parse(ticket.dataValues.dateMonth));
+		monthStats[date.getMonth()] = ticket.dataValues.count
+	});
+
 	let json = project.toJSON();
 	json.isAdmin = project.admin == req.user.username;
 	json.ticketStats = ticketStats;
+	json.monthStats = monthStats;
 
 	res.json(json);
 });
@@ -178,7 +205,7 @@ router.post('/', addProjectValidation, validate, async (req, res) => {
 
 /**
  * Update a project
- * @route PUT /projects/{projectName}
+ * @route PUT /projects/{project}
  * @group Projects
  * @param {string} project.path.required
  * @param {UpdateProjectDTO.model} project.body.required
@@ -239,7 +266,7 @@ router.put('/:project', updateProjectValidation, validate, async (req, res) => {
 
 /**
  * Delete a project
- * @route DELETE /projects/{projectName}
+ * @route DELETE /projects/{project}
  * @group Projects
  * @param {string} project.path.required
  * @consumes application/json
@@ -331,7 +358,7 @@ router.post('/users', addUserProjectValidation, validate, async (req, res) => {
 
 /**
  * Remove a user from a project
- * @route DELETE /projects/{projectName}/users/{userName}
+ * @route DELETE /projects/{project}/users/{user}
  * @group Projects
  * @param {string} project.path.required
  * @param {string} user.path.required
