@@ -16,7 +16,7 @@ const {
  * @property {string} name - Name of the project
  * @property {string} admin - Admin name of the project
  * @property {string} date - Creation date of the project
- * @property {bool} isAdmin - If the current user is the admin
+ * @property {boolean} isAdmin - If the current user is the admin
  */
 
 /**
@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
  * @property {string} name - Name of the project
  * @property {string} admin - Admin name of the project
  * @property {string} date - Creation date of the project
- * @property {bool} isAdmin - If the current user is the admin
+ * @property {boolean} isAdmin - If the current user is the admin
  * @property {Array.<TicketDTO>} tickets - Tickets of the project
  * @property {object} stats - Tickets stats
  */
