@@ -77,8 +77,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(expressJwt({
-	secret: process.env.SECRET,
-	algorithms: ['RS256']
+	secret: process.env.SECRET
 }).unless({
 	path: [
 		'/',
