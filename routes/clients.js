@@ -81,7 +81,7 @@ router.post('/', addClientValidation, validate, async (req, res) => {
 
 /**
  * Update a client
- * @route PUT /clients/{clientId}
+ * @route PUT /clients/{client}
  * @group Clients
  * @param {UpdateClientDTO.model} client.body.required
  * @consumes application/json
@@ -120,7 +120,7 @@ router.put('/:client', updateClientValidation, validate, async (req, res) => {
 
 /**
  * Delete a client
- * @route DELETE /clients/{clientId}
+ * @route DELETE /clients/{client}
  * @group Clients
  * @param {string} client.path.required
  * @consumes application/json
