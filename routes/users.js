@@ -25,6 +25,7 @@ router.put('/', updateUserValidation, validate, async (req, res) =>{
 	try {
 		await sequelize.user.update({
 			username: req.body.username,
+			password: req.body.password,
 			email: req.body.email
 		}, {
 			where: {
