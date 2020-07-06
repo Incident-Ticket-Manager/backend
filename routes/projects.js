@@ -333,8 +333,8 @@ router.post('/users', addUserProjectValidation, validate, async (req, res) => {
  * Remove a user from a project
  * @route DELETE /projects/{projectName}/users/{userName}
  * @group Projects
- * @param {string} user.path.required
  * @param {string} project.path.required
+ * @param {string} user.path.required
  * @consumes application/json
  * @produces application/json
  * @returns 200 - Project deleted
