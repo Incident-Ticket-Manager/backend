@@ -225,7 +225,7 @@ router.post('/assign/:ticket', assignTicketValidation, validate,  async (req, re
 /**
  * @typedef AssignTicketDTO
  * @property {string} ticket - Id of the ticket
- * @property {string} name - Name of the user
+ * @property {string} user - Name of the user
  */
 
 /**
