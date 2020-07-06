@@ -167,11 +167,16 @@ router.post('/', addProjectValidation, validate, async (req, res) => {
 });
 
 /**
+ * @typedef UpdateProjectDTO
+ * @property {string} name - Name of the project
+ */
+
+/**
  * Update a project
  * @route PUT /projects/{projectName}
  * @group Projects
  * @param {string} project.path.required
- * @param {string} name.body.required
+ * @param {UpdateProjectDTO.model} project.body.required
  * @consumes application/json
  * @produces application/json
  * @returns {ProjectDTO.model} 200 - Project
