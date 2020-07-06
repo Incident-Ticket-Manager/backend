@@ -80,7 +80,7 @@ router.get('/', async (req, res) => {
  * Get one project with his name
  * @route GET /projects/{projectName}
  * @group Projects
- * @param {string} projectName.path.required
+ * @param {string} project.path.required
  * @produces application/json
  * @returns {ProjectFullDTO.model} 200 - Project
  * @returns {Error.model} 400 - Project doesn't exists
@@ -241,7 +241,7 @@ router.put('/:project', updateProjectValidation, validate, async (req, res) => {
  * Delete a project
  * @route DELETE /projects/{projectName}
  * @group Projects
- * @param {string} projectName.path.required
+ * @param {string} project.path.required
  * @consumes application/json
  * @produces application/json
  * @returns 200 - Project deleted
