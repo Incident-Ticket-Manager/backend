@@ -48,7 +48,7 @@ router.post('/', loginValidation, validate, async (req, res) => {
 	let token = jwt.sign({
 		username: user.username,
 		admin: user.admin
-	}, process.env.SECRET);
+	}, process.env.SECRET, { algorithm: 'RS256' });
 
 	res.json({
 		username: user.username,
