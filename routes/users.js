@@ -46,6 +46,7 @@ router.put('/', updateUserValidation, validate, async (req, res) =>{
  * Delete user
  * @route DELETE /users/{userName}
  * @group Users
+ * @param {string} user.path.required - User username
  * @consumes application/json
  * @produces application/json
  * @returns 200 - User deleted
