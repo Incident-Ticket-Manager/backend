@@ -196,7 +196,7 @@ router.put('/:ticket', updateTicketValidation, validate, async (req, res) => {
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.post('/:ticket', deleteTicketValidation, validate, async (req, res) => {
+router.delete('/:ticket', deleteTicketValidation, validate, async (req, res) => {
 
 	let ticket = await sequelize.ticket.findOne({
 		where: {
