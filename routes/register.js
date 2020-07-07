@@ -5,10 +5,17 @@ let crypto = require('crypto');
 const { registerValidation, validate } = require('../validators/user');
 
 /**
- * @typedef UserDTO
+ * @typedef RegisterUserDTO
  * @property {string} username - Username of the user
  * @property {string} password - Password of the user
  * @property {string} email - Email of the user
+ */
+
+/**
+ * @typedef UserDTO
+ * @property {string} username - Username of the user
+ * @property {string} email - Email of the user
+ * @property {boolean} admin - If the current user is and admin
  */
 
 /**
@@ -25,7 +32,7 @@ const { registerValidation, validate } = require('../validators/user');
  * Register a new user
  * @route POST /register
  * @group Authentification
- * @param {UserDTO.model} user.body.required - user body
+ * @param {RegisterUserDTO.model} user.body.required - user body
  * @consumes application/json
  * @produces application/json
  * @returns 200 - User registered
