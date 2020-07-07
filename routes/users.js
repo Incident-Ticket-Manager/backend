@@ -9,12 +9,20 @@ const {
 } = require('../validators/user');
 
 /**
+ * @typedef GetUserDTO
+ * @property {string} username - Username of the user
+ * @property {string} email - Email of the user
+ * @property {string} admin - If the current user is and admin
+ * @property {int} ticketCount - Number of tickets
+ */
+
+/**
  * Get all users
  * @route GET /users
  * @group Users
  * @consumes application/json
  * @produces application/json
- * @returns {Array.<UserDTO>} 200 - List of users
+ * @returns {Array.<GetUserDTO>} 200 - List of users
  * @returns 401 - User not authentified
  * @security JWT
  */
