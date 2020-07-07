@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
+let jwt = require('jsonwebtoken');
 let Sequelize = require('sequelize');
 const { 
 	deleteUserValidation, 
@@ -42,9 +43,10 @@ router.get('/', async (req, res) =>{
 });
 
 /**
- * Update current user
- * @route PUT /users
+ * Update a user
+ * @route PUT /users/{user}
  * @group Users
+ * @param {string} user.path.required - User username
  * @param {UserDTO.model} user.body.required - User body
  * @consumes application/json
  * @produces application/json
@@ -54,18 +56,30 @@ router.get('/', async (req, res) =>{
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
-router.put('/', updateUserValidation, validate, async (req, res) =>{
+router.put('/:user', updateUserValidation, validate, async (req, res) =>{
 
+	let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 	try {
 		await sequelize.user.update({
 			username: req.body.username,
-			password: req.body.password,
+			password: password,
 			email: req.body.email
 		}, {
 			where: {
-				username: req.user.username
+				username: req.params.user
 			}
 		});
+
+		let user = await sequelize.user.findOne({
+			where: {
+				username: req.body.username,
+			}
+		});
+
+		jwt.sign({
+			username: user.username,
+			admin: user.admin
+		}, process.env.SECRET);
 
 		res.json();
 	}

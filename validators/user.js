@@ -13,6 +13,7 @@ const loginValidation = [
 ];
 
 const updateUserValidation = [
+	param('user', 'Username required').not().isEmpty(),
 	body('username', 'Username required').not().isEmpty(),
 	body('password', 'Password required').not().isEmpty(),
 	body('email', 'Valid email required').isEmail()
