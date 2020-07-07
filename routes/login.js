@@ -48,7 +48,9 @@ router.post('/', loginValidation, validate, async (req, res) => {
 	let token = jwt.sign({
 		username: user.username,
 		admin: user.admin
-	}, process.env.SECRET);
+	}, process.env.SECRET, {
+		expiresIn: 3600 * 24
+	});
 
 	res.json({
 		username: user.username,

@@ -47,7 +47,7 @@ router.get('/', async (req, res) =>{
  * @route PUT /users/{user}
  * @group Users
  * @param {string} user.path.required - User username
- * @param {UserDTO.model} user.body.required - User body
+ * @param {RegisterUserDTO.model} user.body.required - User body
  * @consumes application/json
  * @produces application/json
  * @returns 200 - User updated
@@ -79,7 +79,9 @@ router.put('/:user', updateUserValidation, validate, async (req, res) =>{
 		jwt.sign({
 			username: user.username,
 			admin: user.admin
-		}, process.env.SECRET);
+		}, process.env.SECRET, {
+			expiresIn: 3600 * 24
+		});
 
 		res.json();
 	}
