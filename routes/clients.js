@@ -28,12 +28,22 @@ const {
  */
 
 /**
+ * @typedef GetClientDTO
+ * @property {string} id - Id of the client
+ * @property {string} name - Name of the client
+ * @property {string} email - Email of the client
+ * @property {string} phone - Phone of the client
+ * @property {string} address - Address of the client
+ * @property {number} ticketCount - Number of tickets
+ */
+
+/**
  * Get all clients
  * @route GET /clients
  * @group Clients
  * @consumes application/json
  * @produces application/json
- * @returns {Array.<ClientDTO>} 200 - List of clients
+ * @returns {Array.<GetClientDTO>} 200 - List of clients
  * @returns 401 - User not authentified
  * @security JWT
  */
