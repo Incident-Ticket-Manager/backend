@@ -81,7 +81,7 @@ router.get('/', async (req, res) => {
  * @property {string} date - Creation date of the project
  * @property {boolean} isAdmin - If the current user is the admin
  * @property {Array.<TicketDTO>} tickets - Tickets of the project
- * @property {Array.<GetUserDTO} users - Users of the project 
+ * @property {Array.<GetUserDTO>} users - Users of the project 
  * @property {object} stats - Tickets stats
  * @property {object} monthStats - Tickets stats per month
  */
