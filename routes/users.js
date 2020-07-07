@@ -29,15 +29,13 @@ const {
 router.get('/', async (req, res) =>{
 	let users = await sequelize.user.findAll({
 		attributes: { 
-			include: [[Sequelize.fn("count", Sequelize.col("tickets.id")), "ticketCount"]] 
+			include: [[Sequelize.fn("count", Sequelize.col("tickets.id")), "ticketCount"]],
+			exclude: ['password']
 		},
 		include: [{
 			model: sequelize.ticket,
 			attributes: []
 		}],
-		attributes: { 
-			exclude: ['password']
-		},
 		group: ['user.username']
 	});
 	res.json(users);
