@@ -51,12 +51,19 @@ router.get('/', async (req, res) =>{
  * @consumes application/json
  * @produces application/json
  * @returns 200 - User updated
- * @returns {Error.model} 400 - Username or email is already used
+ * @returns {Error.model} 400 - Username or email is already used or you are not an admin
  * @returns 401 - User not authentified
  * @returns {Errors.model} 422 - Validation errors
  * @security JWT
  */
 router.put('/:user', updateUserValidation, validate, async (req, res) =>{
+
+	if(!req.user.admin)
+	{
+		return res.status(400).json({
+			error: 'You are not an admin'
+		});
+	}
 
 	let password = crypto.createHash('sha256').update(req.body.password).digest('hex');
 	try {
