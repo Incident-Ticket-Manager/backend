@@ -105,10 +105,21 @@ router.get('/:project', projectDetailsValidation, validate, async (req, res) => 
 		where: {
 			name: req.params.project
 		},
-		include: {
-			model: sequelize.ticket,
-			include: sequelize.client
-		}
+		include: [
+			{
+				model: sequelize.ticket,
+				include: sequelize.client
+			},
+			{
+				model: sequelize.user,
+				through: {
+					attributes: []
+				},
+				attributes: {
+					exclude: ['password']
+				}
+			}
+		]
 	});
 
 	if(project == null) {
