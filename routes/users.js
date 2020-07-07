@@ -3,6 +3,7 @@ let router = express.Router();
 let sequelize = require('../db');
 let jwt = require('jsonwebtoken');
 let Sequelize = require('sequelize');
+let crypto = require('crypto');
 const { 
 	deleteUserValidation, 
 	updateUserValidation,
