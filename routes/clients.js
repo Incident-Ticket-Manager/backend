@@ -24,6 +24,7 @@ const {
  * @property {string} email - Email of the client
  * @property {string} phone - Phone of the client
  * @property {string} address - Address of the client
+ * @property {number} ticketCount - Number of tickets
  */
 
 /**
