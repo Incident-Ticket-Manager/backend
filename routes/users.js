@@ -12,7 +12,7 @@ const {
  * @typedef GetUserDTO
  * @property {string} username - Username of the user
  * @property {string} email - Email of the user
- * @property {string} admin - If the current user is and admin
+ * @property {boolean} admin - If the current user is and admin
  * @property {number} ticketCount - Number of tickets
  */
 
