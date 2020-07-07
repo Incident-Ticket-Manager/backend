@@ -1,11 +1,39 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
+let Sequelize = require('sequelize');
 const { 
 	deleteUserValidation, 
 	updateUserValidation,
 	validate 
 } = require('../validators/user');
+
+/**
+ * Get all users
+ * @route GET /users
+ * @group Users
+ * @consumes application/json
+ * @produces application/json
+ * @returns {Array.<UserDTO>} 200 - List of users
+ * @returns 401 - User not authentified
+ * @security JWT
+ */
+router.get('/', async (req, res) =>{
+	let users = await sequelize.user.findAll({
+		attributes: { 
+			include: [[Sequelize.fn("count", Sequelize.col("tickets.id")), "ticketCount"]] 
+		},
+		include: [{
+			model: sequelize.ticket,
+			attributes: []
+		}],
+		attributes: { 
+			exclude: ['password']
+		},
+		group: ['user.username']
+	});
+	res.json(users);
+});
 
 /**
  * Update current user
