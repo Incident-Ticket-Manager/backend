@@ -1,6 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let sequelize = require('../db');
+let Sequelize = require('sequelize');
 const { 
 	addClientValidation, 
 	updateClientValidation,
@@ -36,7 +37,16 @@ const {
  * @security JWT
  */
 router.get('/', async (req, res) => {
-	let clients = await sequelize.client.findAll();
+	let clients = await sequelize.client.findAll({
+		attributes: { 
+			include: [[Sequelize.fn("count", Sequelize.col("tickets.id")), "ticketCount"]] 
+		},
+		include: [{
+			model: sequelize.ticket,
+			attributes: []
+		}],
+		group: ['client.id']
+	});
 	res.json(clients);
 });
 
