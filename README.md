@@ -2,6 +2,8 @@
 
 Backend WebApi for Incident Ticket Manager.
 
+Incident Ticket Manager is a simple ticketing system app.
+
 ## Run
 
 Ensure that you have Node.js and NPM installed.
