@@ -8,7 +8,7 @@ Incident Ticket Manager is a simple ticketing system app.
 
 Ensure that you have Node.js and NPM installed.
 
-Create .env file
+Create .env file.
 
 Set : 
 - SECRET=YOUR_SECRET_TOKEN
