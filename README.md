@@ -27,3 +27,14 @@ npm run start
 - Sequelize
 - Sqlite
 - JWT
+
+## Docker
+
+```sh
+# Run the container
+$ docker run -d \
+  -p 3000:3000 \
+  -e "SECRET=your-secret" \
+  -e "DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}" \
+  --name itm-backend thomaslacaze/itm-backend
+```
