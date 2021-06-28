@@ -7,12 +7,31 @@
     - appDir : app
 
   tasks:
-    - name: Install Packages
-      apt: name={{ item }} update_cache=yes state=latest
-      with_items:
-        - python3
-        - nodejs
-        - git
+    - name: install nodejs prerequisites
+      apt:
+        name:
+          - apt-transport-https
+          - gcc
+          - g++
+          - make
+          - python3
+        state: present
+        
+    - name: add nodejs apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+        
+    - name: add nodejs repository
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_14.x {{ ansible_lsb.codename }} main
+        state: present
+        update_cache: yes
+        
+    - name: install nodejs
+      apt:
+        name: nodejs
+        state: present
 
     - name: Install pm2
       npm: name=pm2 global=yes production=yes
