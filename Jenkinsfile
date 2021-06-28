@@ -8,25 +8,14 @@ pipeline {
     app_port = '3000'
   }
   stages {
-    stage("Clean Workspace"){
-      steps {
-        cleanWs()
-      }
-    }
     stage("Build AMI"){            
       steps {
-        sh 'pwd'
-        sh 'ls'
-        dir("backend"){
-          sh 'pwd'
-          sh 'ls'
           sh 'packer build buildAMI.json'
-        }
       }
     }
     stage("Deploy infra"){
       steps {
-        dir("backend/deploy-infra-itm"){
+        dir("deploy-infra-itm"){
           sh 'terraform init'
           sh 'terraform plan'
           sh 'terraform apply -auto-approve'
@@ -35,11 +24,16 @@ pipeline {
     }
     stage("Deploy backend"){
       steps {
-        dir("backend/deploy-backend-itm"){
+        dir("deploy-backend-itm"){
           sh 'terraform init'
           sh 'terraform plan'
           sh 'terraform apply -auto-approve'
         }
+      }
+    }
+    stage("Clean Workspace"){
+      steps {
+        cleanWs()
       }
     }
   }
