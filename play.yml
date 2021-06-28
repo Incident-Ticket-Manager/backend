@@ -23,7 +23,7 @@
 
     - name: Git checkout website
       git:
-        repo: git clone https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
+        repo: https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
         dest: path={{homeDir}}/{{appDir}}
 
     - name: Running NPM install
