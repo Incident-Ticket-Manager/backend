@@ -11,6 +11,7 @@ Ensure that you have Node.js and NPM installed.
 Create .env file.
 
 Set : 
+- PORT=3000
 - SECRET=YOUR_SECRET_TOKEN
 - DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
 - DEV=DEV
