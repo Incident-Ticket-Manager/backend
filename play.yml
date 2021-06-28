@@ -1,0 +1,41 @@
+---
+- hosts: all
+  become: yes
+
+  vars:
+    - homeDir: /home/ubuntu
+    - appDir : app
+
+  tasks:
+    - name: Install Packages
+      apt: name={{ item }} update_cache=yes state=latest
+      with_items:
+        - python3
+        - npm
+        - nodejs
+        - git
+
+    - name: Install pm2
+      npm: name=pm2 global=yes production=yes
+
+    - name: Create APP Directory
+      file: path={{homeDir}}/{{appDir}} state=directory
+
+    - name: Git checkout website
+      git:
+        repo: git clone https://Ombrelin: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@github.com/Incident-Ticket-Manager/backend.git
+        dest: path={{homeDir}}/{{appDir}}
+
+    - name: Running NPM install
+      npm: path={{homeDir}}/{{appDir}}/backend
+      register: npm_finished
+      when: git_finished.changed
+
+    - name: Start APP
+      sudo_user: ubuntu
+      command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}/backend
+      ignore_errors: yes
+      when: npm_finished.changed
+      environnement:
+        - SECRET=MA5y3KZGmjSS5dp@
+        - PORT=3000

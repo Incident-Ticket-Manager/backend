@@ -1,53 +1,38 @@
 pipeline {
-  environment {
-    imageName = 'thomaslacaze/itm-backend'
-    registryCredential = 'dockerCredential'
-    awsCredential = 'awsCredential'
-    awsRegion = 'AWS_DEFAULT_REGION'
-    bucketName = 'itm-backend'
-  }
-
   agent any
+  environment {
+    AWS_DEFAULT_REGION = credentials('AWS_DEFAULT_REGION')
+    aws_access_key = credentials('AWS_ACCESS_KEY_ID')
+    aws_secret_key = credentials('AWS_SECRET_ACCESS_KEY')
+    temporary_security_group_source_cidrs = credentials('SERVER_IP')
+    app_port = '3000'
+  }
   stages {
-
-    stage('Display env') {
+    stage("Clean Workspace"){
       steps {
-        sh 'printenv'
+        cleanWs()
       }
     }
-
-    stage('Build & Deploy Image release') {
-      when {
-        tag '*'
-      }
+    stage("Build AMI"){            
       steps {
-        script {
-          version = TAG_NAME
-          versions = version.split('\\.')
-          major = versions[0]
-          minor = versions[0] + '.' + versions[1]
-          patch = version.trim()
-          docker.withRegistry('', registryCredential) {
-            image = docker.build imageName+":latest"
-            image.push()
-            image.push(major)
-            image.push(minor)
-            image.push(patch)
-          }
+        sh 'packer build buildAMI.json'
+      }
+    }
+    stage("Deploy infra"){
+      steps {
+        dir("deploy-infra-itm"){
+          sh 'terraform init'
+          sh 'terraform plan'
+          sh 'terraform apply -auto-approve'
         }
       }
     }
-
-    stage('Build & Deploy Image Dev') {
-      when {
-        branch 'develop'
-      }
+    stage("Deploy backend"){
       steps {
-        script {
-          docker.withRegistry('', registryCredential) {
-            image = docker.build imageName+":develop"
-            image.push()
-          }
+        dir("deploy-backend-itm"){
+          sh 'terraform init'
+          sh 'terraform plan'
+          sh 'terraform apply -auto-approve'
         }
       }
     }
