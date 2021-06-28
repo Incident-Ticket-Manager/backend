@@ -15,7 +15,11 @@ pipeline {
     }
     stage("Build AMI"){            
       steps {
+        sh 'pwd'
+        sh 'ls'
         dir("backend"){
+          sh 'pwd'
+          sh 'ls'
           sh 'packer build buildAMI.json'
         }
       }
