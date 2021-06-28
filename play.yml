@@ -35,6 +35,6 @@
       command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}/backend
       ignore_errors: yes
       when: npm_finished.changed
-      environnement:
+      environment:
         - SECRET=MA5y3KZGmjSS5dp@
         - PORT=3000
