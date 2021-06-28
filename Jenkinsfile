@@ -15,12 +15,14 @@ pipeline {
     }
     stage("Build AMI"){            
       steps {
-        sh 'packer build buildAMI.json'
+        dir("backend"){
+          sh 'packer build buildAMI.json'
+        }
       }
     }
     stage("Deploy infra"){
       steps {
-        dir("deploy-infra-itm"){
+        dir("backend/deploy-infra-itm"){
           sh 'terraform init'
           sh 'terraform plan'
           sh 'terraform apply -auto-approve'
@@ -29,7 +31,7 @@ pipeline {
     }
     stage("Deploy backend"){
       steps {
-        dir("deploy-backend-itm"){
+        dir("backend/deploy-backend-itm"){
           sh 'terraform init'
           sh 'terraform plan'
           sh 'terraform apply -auto-approve'
