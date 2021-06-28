@@ -32,7 +32,6 @@
       when: git_finished.changed
 
     - name: Start APP
-      sudo_user: ubuntu
       command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}/backend
       ignore_errors: yes
       when: npm_finished.changed
