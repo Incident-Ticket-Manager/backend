@@ -6,6 +6,7 @@ pipeline {
     aws_secret_key = credentials('AWS_SECRET_ACCESS_KEY')
     temporary_security_group_source_cidrs = credentials('SERVER_IP')
     app_port = '3000'
+    github_token = credentials('github_token')
   }
   stages {
     stage("Build AMI"){            

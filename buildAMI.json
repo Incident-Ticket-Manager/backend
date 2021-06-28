@@ -8,7 +8,8 @@
         "aws_access_key":"{{env `aws_access_key`}}",
         "aws_secret_key":"{{env `aws_secret_key`}}",
         "app_port": "{{env `app_port`}}",
-        "temporary_security_group_source_cidrs":"{{env `temporary_security_group_source_cidrs`}}"
+        "temporary_security_group_source_cidrs":"{{env `temporary_security_group_source_cidrs`}}",
+        "github_token": "{{env `github_token`}}"
     },
     "builders": [
         {
@@ -34,7 +35,8 @@
             "extra_arguments": [
                 "-vvv",
                 "--extra-vars", 
-                "user=ubuntu"
+                "user=ubuntu",
+                "github_token={{user `github_token`}}"
               ],
             "user": "me"
         }
