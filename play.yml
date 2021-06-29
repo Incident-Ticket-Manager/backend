@@ -42,17 +42,20 @@
         repo: https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
         dest: "{{homeDir}}/{{appDir}}"
       #register: git_finished
-    
-    - name: Running NPM install
-      npm: path={{homeDir}}/{{appDir}}/backend
-      #register: npm_finished
-      #when: git_finished.changed
       
     - name: ls APP
       command: chdir={{homeDir}}/{{appDir}} ls -lht
       
     - name: ls APP2
       command: chdir={{homeDir}}/{{appDir}}/backend ls -lht
+    
+    - name: Running NPM install
+      command: "npm install"
+      become: yes
+      args:
+        chdir: "{{homeDir}}/{{appDir}}/backend"
+      #register: npm_finished
+      #when: git_finished.changed
 
     - name: Start APP
       command: chdir={{homeDir}}/{{appDir}}/backend npm start  #pm2 start {{homeDir}}/{{appDir}}/backend/app.js --name app
