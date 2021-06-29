@@ -21,9 +21,9 @@ let expressJwt = require('express-jwt');
 let app = express();
 let expressSwagger = require('express-swagger-generator')(app);
 
-const { sequelize } = require('./db.js');
-
 console.log(process.env);
+
+const { sequelize } = require('./db.js');
 
 let isDev = process.env.DEV != undefined;
 
