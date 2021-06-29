@@ -1,9 +1,7 @@
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
 const db = {};
 
 // enable ssl
@@ -26,23 +24,22 @@ let sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 let dir = __dirname + "/models";
 
-fs.readdirSync(dir)
-	.filter(file => {
-		return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-	})
-	.forEach(file => {
-		const model = sequelize['import'](path.join(dir, file));
-		db[model.name] = model;
-	});
+const models = [
+	'user.js',
+	'project.js',
+	'user_project.js',
+	'client.js',
+	'ticket.js',
+];
 
-Object.values(db).forEach(model => {
+models.forEach(async file => {
+	const model = sequelize['import'](path.join(dir, file));
+	db[model.name] = model;
+
+	await model.sync();
 	if (model.associate) {
-		model.associate(db);
+		await model.associate(db);
 	}
-});
-
-Object.values(db).forEach(model => {
-	model.sync();
 });
 
 db.sequelize = sequelize;
