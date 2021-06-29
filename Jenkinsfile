@@ -2,8 +2,8 @@ pipeline {
   agent any
   environment {
     AWS_DEFAULT_REGION = credentials('AWS_DEFAULT_REGION')
-    aws_access_key = credentials('AWS_ACCESS_KEY_ID')
-    aws_secret_key = credentials('AWS_SECRET_ACCESS_KEY')
+    AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     temporary_security_group_source_cidrs = credentials('SERVER_IP')
     app_port = '3000'
     github_token = credentials('github_token')
