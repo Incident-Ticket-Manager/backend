@@ -23,6 +23,8 @@ let expressSwagger = require('express-swagger-generator')(app);
 
 const { sequelize } = require('./db.js');
 
+console.log(process.env);
+
 let isDev = process.env.DEV != undefined;
 
 // Swagger engine setup

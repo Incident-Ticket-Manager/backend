@@ -3,8 +3,12 @@
   become: yes
 
   vars:
-    - homeDir: /home/ubuntu
-    - appDir : app
+    homeDir: /home/ubuntu
+    appDir: app
+    start_env:
+      secret: MA5y3KZGmjSS5dp@
+      port: 3000
+      database_url: {{database_url}}
 
   tasks:
     - name: install nodejs prerequisites
@@ -66,7 +70,4 @@
     - name: Start APP
       command: chdir={{homeDir}}/{{appDir}} npm start  #pm2 start {{homeDir}}/{{appDir}}/backend/app.js --name app
       #when: npm_finished.changed
-      environment:
-        - SECRET=MA5y3KZGmjSS5dp@
-        - PORT=3000
-        - DATABASE_URL="{{database_url}}"
+      environment: "{{ start_env }}"
