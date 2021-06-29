@@ -44,7 +44,7 @@
       #register: git_finished
     
     - name: Running NPM install
-      npm: path={{homeDir}}/{{appDir}}/backend
+      npm: {{homeDir}}/{{appDir}}/backend
       #register: npm_finished
       #when: git_finished.changed
       
