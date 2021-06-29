@@ -11,8 +11,7 @@
       apt:
         name:
           - apt-transport-https
-          - g++
-          - make
+          - build-essential
           - python3
         state: latest
         update_cache: yes
