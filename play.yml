@@ -48,7 +48,7 @@
       become: yes
 
     - name: Running NPM cache clean
-      command: "npm cache clean"
+      command: "npm cache clean --force"
       become: yes
       
     - name: Running NPM install
