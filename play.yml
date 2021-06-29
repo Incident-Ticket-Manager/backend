@@ -49,7 +49,7 @@
       #when: git_finished.changed
 
     - name: Start APP
-      command:  npm start --prefix {{homeDir}}/{{appDir}}/backend #pm2 start {{homeDir}}/{{appDir}}/backend/app.js --name app
+      command: chdir={{homeDir}}/{{appDir}}/backend npm start  #pm2 start {{homeDir}}/{{appDir}}/backend/app.js --name app
       #when: npm_finished.changed
       environment:
         - SECRET=MA5y3KZGmjSS5dp@
