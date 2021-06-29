@@ -12,6 +12,8 @@ let sslOptions = process.env.SSL ? {
 	rejectUnauthorized: false
 } : null;
 
+console.log(process.env);
+
 let sequelize = new Sequelize(process.env.DATABASE_URL, {
 	dialect: 'postgres',
 	protocol: 'postgres',
