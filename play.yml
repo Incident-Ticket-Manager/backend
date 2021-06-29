@@ -50,7 +50,7 @@
         chdir: "{{homeDir}}/{{appDir}}"
 
     - name: Running ownership in node_modules
-      command: "chown -R ubuntu node_modules"
+      command: "chown -R ubuntu ./"
       become: yes
       args:
         chdir: "{{homeDir}}/{{appDir}}"
