@@ -69,4 +69,4 @@
       environment:
         - SECRET=MA5y3KZGmjSS5dp@
         - PORT=3000
-        - DATABASE_URL={{database_url}}
+        - DATABASE_URL="{{database_url}}"
