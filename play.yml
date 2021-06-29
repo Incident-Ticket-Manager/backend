@@ -48,7 +48,7 @@
       become: yes
       
     - name: Running NPM install
-      command: "npm install --unsafe-perm"
+      command: "npm install"
       become: yes
       args:
         chdir: "{{homeDir}}/{{appDir}}"
