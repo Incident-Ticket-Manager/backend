@@ -40,7 +40,7 @@
     - name: Git checkout website
       git:
         repo: https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
-        dest: {{homeDir}}/{{appDir}}
+        dest: "{{homeDir}}/{{appDir}}"
       #register: git_finished
     
     - name: Running NPM install
