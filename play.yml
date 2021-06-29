@@ -12,7 +12,7 @@
         name:
           - apt-transport-https
           - python3
-          - python3-dev
+          - python-dev
         state: latest
         update_cache: yes
         
