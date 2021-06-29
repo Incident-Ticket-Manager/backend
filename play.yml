@@ -49,8 +49,10 @@
       when: git_finished.changed
 
     - name: Start APP
-      command: pm2 start bin/www --name app chdir={{homeDir}}/{{appDir}}/backend
+      command: pm2 start ./bin/www --name app
       when: npm_finished.changed
+      args:
+        chdir: {{homeDir}}/{{appDir}}/backend
       environment:
         - SECRET=MA5y3KZGmjSS5dp@
         - PORT=3000
