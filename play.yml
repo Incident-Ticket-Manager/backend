@@ -45,13 +45,13 @@
       #register: git_finished
 
     - name: Running ownership in .npm
-      command: "chown -R $(whoami) ~/.npm"
+      command: "chown -R ubuntu ~/.npm"
       become: yes
       args:
         chdir: "{{homeDir}}/{{appDir}}"
 
     - name: Running ownership in node_modules
-      command: "chown -R $(whoami) node_modules"
+      command: "chown -R ubuntu node_modules"
       become: yes
       args:
         chdir: "{{homeDir}}/{{appDir}}"
