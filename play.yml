@@ -44,7 +44,7 @@
       #register: git_finished
       
     - name: Running NPM install
-      command: "npm install"
+      command: "npm install --unsafe-perm"
       become: yes
       args:
         chdir: "{{homeDir}}/{{appDir}}"
