@@ -4,6 +4,7 @@ pipeline {
     AWS_DEFAULT_REGION = credentials('AWS_DEFAULT_REGION')
     AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    DATABASE_URL = credentials('DATABASE_URL')
     temporary_security_group_source_cidrs = credentials('SERVER_IP')
     app_port = '3000'
     github_token = credentials('github_token')
