@@ -68,6 +68,8 @@
       #when: git_finished.changed
 
     - name: Start APP
-      command: chdir={{homeDir}}/{{appDir}} npm start  #pm2 start {{homeDir}}/{{appDir}}/backend/app.js --name app
+      command: pm2 start ./bin/wwww --name app
       #when: npm_finished.changed
+      args:
+        chdir: "{{homeDir}}/{{appDir}}"
       environment: "{{ start_env }}"
