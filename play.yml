@@ -68,7 +68,7 @@
       #when: git_finished.changed
 
     - name: Start APP
-      command: pm2 start ./bin/wwww --name app
+      command: pm2 start ./bin/www --name app
       #when: npm_finished.changed
       args:
         chdir: "{{homeDir}}/{{appDir}}"
