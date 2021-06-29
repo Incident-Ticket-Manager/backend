@@ -6,15 +6,18 @@ const Sequelize = require('sequelize');
 const basename = path.basename(__filename);
 const db = {};
 
+// enable ssl
+let sslOptions = process.env.SSL ? {
+	require: true,
+	rejectUnauthorized: false
+} : null;
+
 let sequelize = new Sequelize(process.env.DATABASE_URL, {
 	dialect: 'postgres',
 	protocol: "postgres",
 	ssl: true,
 	dialectOptions: {
-		ssl: {
-			require: true,
-			rejectUnauthorized: false
-		}
+		ssl: sslOptions,
 	},
 	define: {
 		timestamps: false
