@@ -6,9 +6,9 @@
     homeDir: /home/ubuntu
     appDir: app
     start_env:
-      secret: MA5y3KZGmjSS5dp@
-      port: 3000
-      database_url: "{{database_url}}"
+      SECRET: MA5y3KZGmjSS5dp@
+      PORT: 3000
+      DATABASE_URL: "{{database_url}}"
 
   tasks:
     - name: install nodejs prerequisites
