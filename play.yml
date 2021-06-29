@@ -43,22 +43,16 @@
         dest: "{{homeDir}}/{{appDir}}"
       #register: git_finished
       
-    - name: ls APP
-      command: chdir={{homeDir}}/{{appDir}} ls -lht
-      
-    - name: ls APP2
-      command: chdir={{homeDir}}/{{appDir}}/backend ls -lht
-    
     - name: Running NPM install
       command: "npm install"
       become: yes
       args:
-        chdir: "{{homeDir}}/{{appDir}}/backend"
+        chdir: "{{homeDir}}/{{appDir}}"
       #register: npm_finished
       #when: git_finished.changed
 
     - name: Start APP
-      command: chdir={{homeDir}}/{{appDir}}/backend npm start  #pm2 start {{homeDir}}/{{appDir}}/backend/app.js --name app
+      command: chdir={{homeDir}}/{{appDir}} npm start  #pm2 start {{homeDir}}/{{appDir}}/backend/app.js --name app
       #when: npm_finished.changed
       environment:
         - SECRET=MA5y3KZGmjSS5dp@
