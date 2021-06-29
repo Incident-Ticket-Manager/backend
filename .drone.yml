@@ -63,7 +63,7 @@ name: deploy
 
 steps:
 - name: Packer
-  image: appleboy/drone-packer
+  image: thomaslacaze/drone-packer-ansible
   settings:
     template: buildAMI.json
     actions: build
