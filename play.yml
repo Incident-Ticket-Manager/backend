@@ -46,6 +46,10 @@
     - name: Running NPM upgrade npm
       command: "npm install -g npm"
       become: yes
+
+    - name: Running NPM cache clean
+      command: "npm cache clean"
+      become: yes
       
     - name: Running NPM install
       command: "npm install"
