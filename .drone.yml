@@ -62,8 +62,9 @@ type: docker
 name: deploy
 
 steps:
-  packer:
-    image: appleboy/drone-packer
+- name: Packer
+  image: appleboy/drone-packer
+  settings:
     template: buildAMI.json
     actions: build
 
