@@ -42,6 +42,10 @@
         repo: https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
         dest: "{{homeDir}}/{{appDir}}"
       #register: git_finished
+
+    - name: Running NPM upgrade npm
+      command: "npm install -g npm"
+      become: yes
       
     - name: Running NPM install
       command: "npm install --unsafe-perm"
