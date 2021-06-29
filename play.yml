@@ -7,13 +7,29 @@
     - appDir : app
 
   tasks:
-    - name: Install Packages
-      apt: name={{ item }} update_cache=yes state=latest
-      with_items:
-        - python3
-        - npm
-        - nodejs
-        - git
+    - name: install nodejs prerequisites
+      apt:
+        name:
+          - apt-transport-https
+          - python3
+        state: latest
+        update_cache: yes
+        
+    - name: add nodejs apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+        
+    - name: add nodejs repository
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_14.x {{ ansible_lsb.codename }} main
+        state: present
+        update_cache: yes
+        
+    - name: install nodejs
+      apt:
+        name: nodejs
+        state: latest
 
     - name: Install pm2
       npm: name=pm2 global=yes production=yes
@@ -23,9 +39,10 @@
 
     - name: Git checkout website
       git:
-        repo: git clone https://Ombrelin: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@github.com/Incident-Ticket-Manager/backend.git
+        repo: https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
         dest: path={{homeDir}}/{{appDir}}
-
+      register: git_finished
+    
     - name: Running NPM install
       npm: path={{homeDir}}/{{appDir}}/backend
       register: npm_finished
@@ -38,3 +55,4 @@
       environment:
         - SECRET=MA5y3KZGmjSS5dp@
         - PORT=3000
+        - DATABASE_URL={{database_url}}

@@ -5,10 +5,12 @@
         "base_ami": "ami-03ef731cc103c9f09",
         "instance_type": "t2.micro",
         "associate_public_ip_address": "true",
-        "aws_access_key":"{{env `aws_access_key`}}",
-        "aws_secret_key":"{{env `aws_secret_key`}}",
+        "aws_access_key":"{{env `AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_key":"{{env `AWS_SECRET_ACCESS_KEY`}}",
         "app_port": "{{env `app_port`}}",
-        "temporary_security_group_source_cidrs":"{{env `temporary_security_group_source_cidrs`}}"
+        "temporary_security_group_source_cidrs":"{{env `temporary_security_group_source_cidrs`}}",
+        "github_token": "{{env `github_token`}}",
+        "database_url": "{{env `DATABASE_URL`}}"
     },
     "builders": [
         {
@@ -17,7 +19,7 @@
             "source_ami": "{{user `base_ami`}}",
             "instance_type": "{{user `instance_type`}}",
             "ssh_username": "{{user `ssh_username`}}",
-            "ami_name": "AMI-Apache-{{timestamp}}",
+            "ami_name": "AMI-ITM-backend-{{timestamp}}",
             "temporary_security_group_source_cidrs": "{{user `temporary_security_group_source_cidrs`}}",
             "associate_public_ip_address": "{{user `associate_public_ip_address`}}",
             "tags": {
@@ -34,7 +36,7 @@
             "extra_arguments": [
                 "-vvv",
                 "--extra-vars", 
-                "user=ubuntu"
+                "user=ubuntu github_token={{user `github_token`}} database_url={{user `database_url`}}"
               ],
             "user": "me"
         }
