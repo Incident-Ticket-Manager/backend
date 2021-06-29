@@ -49,8 +49,7 @@
       when: git_finished.changed
 
     - name: Start APP
-      command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}/backend
-      ignore_errors: yes
+      command: pm2 start bin/www --name app chdir={{homeDir}}/{{appDir}}/backend
       when: npm_finished.changed
       environment:
         - SECRET=MA5y3KZGmjSS5dp@
