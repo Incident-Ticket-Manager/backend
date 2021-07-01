@@ -104,5 +104,8 @@
         chdir: "{{homeDir}}/{{appDir}}"
       environment: "{{ start_env }}"
 
+    - name: PM2 status
+      command: pm2 status
+
     - name: test
       command: curl http://localhost:443/docs
