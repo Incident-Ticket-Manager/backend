@@ -171,7 +171,7 @@ resource "aws_elb" "web-elb" {
   health_check {
     healthy_threshold   = 2
     interval            = 30
-    target              = "HTTP:443/"
+    target              = "HTTP:443/docs"
     timeout             = 3
     unhealthy_threshold = 2
   }
