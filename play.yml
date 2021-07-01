@@ -74,8 +74,14 @@
         chdir: "{{homeDir}}/{{appDir}}"
       environment: "{{ start_env }}"
 
-    - name: PM2 Startup
-      command: pm2 startup
+    # - name: PM2 Startup
+    #   command: pm2 startup
+    #   args:
+    #     chdir: "{{homeDir}}/{{appDir}}"
+    #   environment: "{{ start_env }}"
+
+    - name: PM2 Save
+      command: pm2 save
       args:
         chdir: "{{homeDir}}/{{appDir}}"
       environment: "{{ start_env }}"
