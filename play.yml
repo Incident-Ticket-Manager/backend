@@ -60,10 +60,10 @@
       command: sed -i "s|process.env.SECRET|MA5y3KZGmjSS5dp@|" {{homeDir}}/{{appDir}}/app.js
 
     - name: Debug db.js
-      command: cat db.js
+      command: cat {{homeDir}}/{{appDir}}/db.js
 
     - name: Debug app.js
-      command: cat app.js
+      command: cat {{homeDir}}/{{appDir}}/app.js
 
     - name: Running ownership in .npm
       command: "chown -R ubuntu ~/.npm"
