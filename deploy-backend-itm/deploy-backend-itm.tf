@@ -79,6 +79,10 @@ data "aws_subnet" "subnet-private-3" {
 ## AZ zones de disponibilités dans la région
 data "aws_availability_zones" "all" {}
 
+data "template_file" "user_data" {
+  template = file("template-itm-backend.yaml")
+}
+
 ########################################################################
 # Security Groups
 ## ASG
@@ -126,6 +130,7 @@ resource "aws_security_group" "web-sg-elb" {
 resource "aws_launch_configuration" "web-lc" {
   image_id      = data.aws_ami.selected.id
   instance_type = "t2.micro"
+  user_data     = data.template_file.user_data.rendered
   #  key_name = ""  # Si vous voulez utiliser une KeyPair pour vous connecter aux instances
   security_groups = [aws_security_group.web-sg-asg.id]
   lifecycle {
