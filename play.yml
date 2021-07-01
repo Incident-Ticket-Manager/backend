@@ -7,7 +7,7 @@
     appDir: app
     start_env:
       SECRET: MA5y3KZGmjSS5dp@
-      PORT: 3000
+      PORT: 443
       DATABASE_URL: "{{database_url}}"
 
   tasks:
