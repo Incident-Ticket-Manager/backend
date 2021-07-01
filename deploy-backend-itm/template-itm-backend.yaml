@@ -1,3 +1,0 @@
-runcmd:
-  - cd /home/ubuntu/app
-  - npm run start
