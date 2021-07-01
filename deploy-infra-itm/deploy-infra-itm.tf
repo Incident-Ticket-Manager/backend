@@ -140,7 +140,7 @@ resource "aws_security_group_rule" "web_egress_allow_all" {
 
 ## SG Rule ingress
 resource "aws_security_group_rule" "ingress_allow_private" {
-   ype              = "ingress"
+  type              = "ingress"
   from_port         = 0
   to_port           = 0
   protocol          = -1
