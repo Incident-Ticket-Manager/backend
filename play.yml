@@ -92,7 +92,7 @@
 
     - name: Start APP
       command: pm2 start ./bin/www --name app
-      #when: npm_finished.changed
+      # when: npm_finished.changed
       args:
         chdir: "{{homeDir}}/{{appDir}}"
       environment: "{{ start_env }}"
