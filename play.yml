@@ -71,7 +71,7 @@
       become: yes
       args:
         chdir: "{{homeDir}}/{{appDir}}"
-      #register: npm_finished
+      # register: npm_finished
       #when: git_finished.changed
       
     - name: create /etc/profile.d/script.sh
