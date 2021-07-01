@@ -3,8 +3,12 @@
   become: yes
 
   vars:
-    - homeDir: /home/ubuntu
-    - appDir : app
+    homeDir: /home/ubuntu
+    appDir: app
+    start_env:
+      SECRET: MA5y3KZGmjSS5dp@
+      PORT: 3000
+      DATABASE_URL: "{{database_url}}"
 
   tasks:
     - name: install nodejs prerequisites
@@ -40,19 +44,32 @@
     - name: Git checkout website
       git:
         repo: https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
-        dest: path={{homeDir}}/{{appDir}}
-      register: git_finished
-    
+        dest: "{{homeDir}}/{{appDir}}"
+      #register: git_finished
+
+    - name: Running ownership in .npm
+      command: "chown -R ubuntu ~/.npm"
+      become: yes
+      args:
+        chdir: "{{homeDir}}/{{appDir}}"
+
+    - name: Running ownership in node_modules
+      command: "chown -R ubuntu ./"
+      become: yes
+      args:
+        chdir: "{{homeDir}}/{{appDir}}"
+      
     - name: Running NPM install
-      npm: path={{homeDir}}/{{appDir}}/backend
-      register: npm_finished
-      when: git_finished.changed
+      command: "npm install"
+      become: yes
+      args:
+        chdir: "{{homeDir}}/{{appDir}}"
+      #register: npm_finished
+      #when: git_finished.changed
 
     - name: Start APP
-      command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}/backend
-      ignore_errors: yes
-      when: npm_finished.changed
-      environment:
-        - SECRET=MA5y3KZGmjSS5dp@
-        - PORT=3000
-        - DATABASE_URL={{database_url}}
+      command: pm2 start ./bin/www --name app
+      #when: npm_finished.changed
+      args:
+        chdir: "{{homeDir}}/{{appDir}}"
+      environment: "{{ start_env }}"

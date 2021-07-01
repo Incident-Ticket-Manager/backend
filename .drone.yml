@@ -62,8 +62,9 @@ type: docker
 name: deploy
 
 steps:
-  packer:
-    image: appleboy/drone-packer
+- name: Packer
+  image: thomaslacaze/drone-packer-ansible
+  settings:
     template: buildAMI.json
     actions: build
 

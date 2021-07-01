@@ -16,6 +16,9 @@ Set :
 - DATABASE_URL=postgres://{user}:{password}@{hostname}:{port}/{database-name}
 - DEV=DEV
 
+If you want to use SSL you must add this:
+- SSL=True
+
 ```
 npm run start
 ```
