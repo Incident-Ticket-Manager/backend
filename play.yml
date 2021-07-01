@@ -84,22 +84,6 @@
         chdir: "{{homeDir}}/{{appDir}}"
       # register: npm_finished
       #when: git_finished.changed
-      
-    - name: create /etc/profile.d/script.sh
-      command: touch /etc/profile.d/script.sh
-      become: yes
-      
-    - name: populate /etc/profile.d/script.sh
-      lineinfile:
-        dest: "/etc/profile.d/script.sh"
-        state: present
-        regexp: "^{{ item.key }}="
-        line: "export {{ item.key }}={{ item.value}}"
-      with_items: "{{ os_environment }}"
-      become: yes
-      
-    - name: cat /etc/profile.d/script.sh
-      command: cat /etc/profile.d/script.sh
 
     - name: Start APP
       command: pm2 start ./bin/www --name app
@@ -119,3 +103,6 @@
       args:
         chdir: "{{homeDir}}/{{appDir}}"
       environment: "{{ start_env }}"
+
+    - name: test
+      command: curl http://localhost:443/docs
