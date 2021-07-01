@@ -5,10 +5,13 @@
   vars:
     homeDir: /home/ubuntu
     appDir: app
-    start_env:
-      SECRET: MA5y3KZGmjSS5dp@
-      PORT: 443
-      DATABASE_URL: "{{database_url}}"
+    os_environment:
+      - key: SECRET 
+        value : MA5y3KZGmjSS5dp@
+      - key: PORT 
+        value : 443
+      - key: DATABASE_URL
+        value : "{{database_url}}"
 
   tasks:
     - name: install nodejs prerequisites
@@ -66,22 +69,30 @@
         chdir: "{{homeDir}}/{{appDir}}"
       #register: npm_finished
       #when: git_finished.changed
+      
+    - name: populate /etc/environment
+      lineinfile:
+        dest: "/etc/environment"
+        state: present
+        regexp: "^{{ item.key }}="
+        line: "{{ item.key }}={{ item.value}}"
+      with_items: "{{ os_environment }}"
+      
+    - name: populate /etc/environment
+      command: cat /etc/environment
 
     - name: Start APP
       command: pm2 start ./bin/www --name app
       #when: npm_finished.changed
       args:
         chdir: "{{homeDir}}/{{appDir}}"
-      environment: "{{ start_env }}"
 
     # - name: PM2 Startup
     #   command: pm2 startup
     #   args:
     #     chdir: "{{homeDir}}/{{appDir}}"
-    #   environment: "{{ start_env }}"
 
     - name: PM2 Save
       command: pm2 save
       args:
         chdir: "{{homeDir}}/{{appDir}}"
-      environment: "{{ start_env }}"
