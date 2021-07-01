@@ -130,7 +130,10 @@ resource "aws_security_group" "web-sg-elb" {
 resource "aws_launch_configuration" "web-lc" {
   image_id      = data.aws_ami.selected.id
   instance_type = "t2.micro"
-  user_data     = data.template_file.user_data.rendered
+    user_data = <<-EOF
+        #!/bin/bash
+        cd /home/ubuntu/app && npm run start > /dev/null 2>&1 &
+  EOF
   #  key_name = ""  # Si vous voulez utiliser une KeyPair pour vous connecter aux instances
   security_groups = [aws_security_group.web-sg-asg.id]
   lifecycle {
