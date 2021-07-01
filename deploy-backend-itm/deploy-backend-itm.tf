@@ -112,9 +112,9 @@ resource "aws_security_group" "web-sg-elb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port   = 443
+    from_port   = 3000
     protocol    = "tcp"
-    to_port     = 443
+    to_port     = 3000
     cidr_blocks = ["0.0.0.0/0"]   # Normalement Ouvert sur le web sauf dans le cas d'un site web Privé(Exemple Intranet ou nous qui ne voulons pas exposer le site)
   }
   lifecycle {
@@ -162,14 +162,14 @@ resource "aws_elb" "web-elb" {
   listener {
     instance_port     = 3000
     instance_protocol = "http"
-    lb_port           = 443
+    lb_port           = 3000
     lb_protocol       = "http"
   }
 
   health_check {
     healthy_threshold   = 2
     interval            = 30
-    target              = "HTTP:443/"
+    target              = "HTTP:3000/"
     timeout             = 3
     unhealthy_threshold = 2
   }
