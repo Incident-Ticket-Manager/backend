@@ -79,10 +79,6 @@ data "aws_subnet" "subnet-private-3" {
 ## AZ zones de disponibilités dans la région
 data "aws_availability_zones" "all" {}
 
-data "template_file" "user_data" {
-  template = file("template-itm-backend.yaml")
-}
-
 ########################################################################
 # Security Groups
 ## ASG
@@ -95,6 +91,7 @@ resource "aws_security_group" "web-sg-asg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
   ingress {
     from_port       = 443
     protocol        = "tcp"
@@ -115,6 +112,7 @@ resource "aws_security_group" "web-sg-elb" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+  
   ingress {
     from_port   = 443
     protocol    = "tcp"
