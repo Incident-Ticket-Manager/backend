@@ -5,6 +5,10 @@
   vars:
     homeDir: /home/ubuntu
     appDir: app
+    start_env:
+      SECRET: MA5y3KZGmjSS5dp@
+      PORT: 443
+      DATABASE_URL: "{{database_url}}"
     os_environment:
       - key: SECRET 
         value : MA5y3KZGmjSS5dp@
@@ -91,13 +95,16 @@
       #when: npm_finished.changed
       args:
         chdir: "{{homeDir}}/{{appDir}}"
+      environment: "{{ start_env }}"
 
-    # - name: PM2 Startup
-    #   command: pm2 startup
-    #   args:
-    #     chdir: "{{homeDir}}/{{appDir}}"
+    - name: PM2 Startup
+      command: pm2 startup
+      args:
+        chdir: "{{homeDir}}/{{appDir}}"
+      environment: "{{ start_env }}"
 
     - name: PM2 Save
       command: pm2 save
       args:
         chdir: "{{homeDir}}/{{appDir}}"
+      environment: "{{ start_env }}"
