@@ -52,7 +52,18 @@
       git:
         repo: https://Ombrelin:{{github_token}}@github.com/Incident-Ticket-Manager/backend.git
         dest: "{{homeDir}}/{{appDir}}"
-      #register: git_finished
+    
+    - name: Inject DB Url
+      command: sed -i "s|process.env.DATABASE_URL|{{database_url}}|" db.js
+
+    - name: Inject Secret
+      command: sed -i "s|process.env.SECRET|MA5y3KZGmjSS5dp@|" app.js
+
+    - name: Debug db.js
+      command: cat db.js
+
+    - name: Debug app.js
+      command: cat app.js
 
     - name: Running ownership in .npm
       command: "chown -R ubuntu ~/.npm"
