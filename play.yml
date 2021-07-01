@@ -54,10 +54,10 @@
         dest: "{{homeDir}}/{{appDir}}"
     
     - name: Inject DB Url
-      command: sed -i "s|process.env.DATABASE_URL|{{database_url}}|" db.js
+      command: sed -i "s|process.env.DATABASE_URL|{{database_url}}|" {{homeDir}}/{{appDir}}/db.js
 
     - name: Inject Secret
-      command: sed -i "s|process.env.SECRET|MA5y3KZGmjSS5dp@|" app.js
+      command: sed -i "s|process.env.SECRET|MA5y3KZGmjSS5dp@|" {{homeDir}}/{{appDir}}/app.js
 
     - name: Debug db.js
       command: cat db.js
