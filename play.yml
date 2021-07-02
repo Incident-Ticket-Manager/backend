@@ -5,17 +5,6 @@
   vars:
     homeDir: /home/ubuntu
     appDir: app
-    start_env:
-      SECRET: MA5y3KZGmjSS5dp@
-      PORT: 443
-      DATABASE_URL: "{{database_url}}"
-    os_environment:
-      - key: SECRET 
-        value : MA5y3KZGmjSS5dp@
-      - key: PORT 
-        value : 443
-      - key: DATABASE_URL
-        value : "{{database_url}}"
 
   tasks:
     - name: install nodejs prerequisites
@@ -58,12 +47,6 @@
 
     - name: Inject Secret
       command: sed -i "s|process.env.SECRET|'MA5y3KZGmjSS5dp@'|" {{homeDir}}/{{appDir}}/app.js
-
-    - name: Debug db.js
-      command: cat {{homeDir}}/{{appDir}}/db.js
-
-    - name: Debug app.js
-      command: cat {{homeDir}}/{{appDir}}/app.js
 
     - name: Running ownership in .npm
       command: "chown -R ubuntu ~/.npm"
